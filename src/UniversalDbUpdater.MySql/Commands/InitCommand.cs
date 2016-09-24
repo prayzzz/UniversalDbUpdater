@@ -24,7 +24,7 @@ namespace UniversalDbUpdater.MySql.Commands
         {
             Console.WriteLine("Executing initialization...");
 
-            using (var connection = new MySqlConnection(settings.DbConnection))
+            using (var connection = new MySqlConnection(ConnectionString.Build(settings)))
             {
                 connection.Open();
 

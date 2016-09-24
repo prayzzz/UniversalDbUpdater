@@ -1,16 +1,18 @@
 ﻿{
   "version": "1.0.0-*",
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "embed": [ "Resources/logo.txt" ]
   },
 
   "dependencies": {
     "Microsoft.Extensions.Configuration": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
     "Microsoft.Extensions.Configuration.Binder": "1.0.0",
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
     "Microsoft.NETCore.App": {
-        "type": "platform",
-        "version": "1.0.1"
+      "type": "platform",
+      "version": "1.0.1"
     },
     "UniversalDbUpdater.Common": "1.0.0-*",
     "UniversalDbUpdater.MySql": "1.0.0-*"

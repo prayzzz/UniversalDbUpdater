@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.PlatformAbstractions;
 using UniversalDbUpdater.Common;
 using UniversalDbUpdater.MySql.Commands;
 
@@ -22,6 +24,7 @@ namespace UniversalDbUpdater
             Commands.Add("-i", InitCommand.Current);
             Commands.Add("-c", CreateCommand.Current);
             Commands.Add("-s", ShowMissingScriptsCommand.Current);
+            Commands.Add("-b", BackupCommand.Current);
 
             //Commands.Add("/b", BackupCommand.Current);
             //Commands.Add("/e", ExecuteMissingScriptsCommand.Current);
@@ -31,7 +34,9 @@ namespace UniversalDbUpdater
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("UniversalDbUpdater");
+
+            var logo = ResourceHelper.Current.GetEmbeddedFile(Assembly.GetEntryAssembly(), "UniversalDbUpdater.Resources.logo.txt");
+            Console.WriteLine(logo);
             Console.WriteLine();
 
             LoadSettings();
