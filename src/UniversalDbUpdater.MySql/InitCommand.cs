@@ -32,7 +32,7 @@ namespace UniversalDbUpdater.MySql
                     return 0;
                 }
 
-                var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "DbScriptsTable.mysql");
+                var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MySql.Resources.DbScriptsTable.mysql");
 
                 if (!string.IsNullOrEmpty(script))
                 {

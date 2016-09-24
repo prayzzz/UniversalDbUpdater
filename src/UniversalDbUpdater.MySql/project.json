@@ -2,9 +2,9 @@
     "version": "1.0.0-*",
 
     "buildOptions": {
-        "compile": {
-            "include": "Resources/*.mysql"            
-        }
+        "embed": [
+            "Resources/*.mysql"
+        ]
     },
 
     "dependencies": {
