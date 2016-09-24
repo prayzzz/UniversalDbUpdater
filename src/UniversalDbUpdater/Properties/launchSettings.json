@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UniversalDbUpdater": {
+      "commandName": "Project",
+      "commandLineArgs": "-i"
+    }
+  }
+}
