@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace UniversalDbUpdater.Commands
+namespace UniversalDbUpdater.MsSql.Commands
 {
     /// <summary>
     ///     /b

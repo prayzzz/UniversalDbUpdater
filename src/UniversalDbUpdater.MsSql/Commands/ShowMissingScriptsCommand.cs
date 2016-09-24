@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UniversalDbUpdater.Commands
+namespace UniversalDbUpdater.MsSql.Commands
 {
     public class ShowMissingScriptsCommand : ICommand
     {

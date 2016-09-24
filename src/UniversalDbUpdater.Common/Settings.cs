@@ -1,4 +1,4 @@
-﻿namespace UniversalDbUpdater
+﻿namespace UniversalDbUpdater.Common
 {
     public class Settings
     {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using UniversalDbUpdater.Common;
-using UniversalDbUpdater.MySql;
+using UniversalDbUpdater.MySql.Commands;
 
 namespace UniversalDbUpdater
 {
@@ -20,6 +20,8 @@ namespace UniversalDbUpdater
         {
             Commands = new Dictionary<string, ICommand>();
             Commands.Add("-i", InitCommand.Current);
+            Commands.Add("-c", CreateCommand.Current);
+            Commands.Add("-s", ShowMissingScriptsCommand.Current);
 
             //Commands.Add("/b", BackupCommand.Current);
             //Commands.Add("/e", ExecuteMissingScriptsCommand.Current);
@@ -29,15 +31,15 @@ namespace UniversalDbUpdater
 
         public static void Main(string[] args)
         {
-            Console.WriteLine("mobtima DbUpdater");
+            Console.WriteLine("UniversalDbUpdater");
             Console.WriteLine();
 
-            Console.WriteLine("Loading Settings");
-
             LoadSettings();
+
             EvaluateArguments(args);
 
             Console.WriteLine();
+            Console.ReadLine();
         }
 
         private static void LoadSettings()
@@ -85,7 +87,15 @@ namespace UniversalDbUpdater
             ICommand command;
             if (Commands.TryGetValue(args[0], out command))
             {
-                command.Execute(args.Skip(1), Settings);
+                try
+                {
+                    command.Execute(args.Skip(1), Settings);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception occured");
+                    Console.WriteLine(ex);
+                }
             }
             else
             {
