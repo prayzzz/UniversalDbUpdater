@@ -1,5 +1,11 @@
 {
-  "version": "1.0.0-*",
+    "version": "1.0.0-*",
+
+    "buildOptions": {
+        "compile": {
+            "include": "Resources/*.mysql"            
+        }
+    },
 
     "dependencies": {
         "MySql.Data": "7.0.5-IR21",
@@ -7,9 +13,9 @@
         "UniversalDbUpdater.Common": "1.0.0-*"
     },
 
-  "frameworks": {
-    "netstandard1.6": {
-      "imports": "dnxcore50"
+    "frameworks": {
+        "netstandard1.6": {
+            "imports": "dnxcore50"
+        }
     }
-  }
 }
