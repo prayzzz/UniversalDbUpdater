@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using MySql.Data.MySqlClient;
 using UniversalDbUpdater.Common;
 
 namespace UniversalDbUpdater.MySql.Commands
@@ -26,11 +25,6 @@ namespace UniversalDbUpdater.MySql.Commands
         {
             Console.WriteLine("Creating backup...");
             Console.WriteLine();
-
-            if (!Database.IsDbScriptsTableAvailable(settings))
-            {
-                return 1;
-            }
 
             var fileName = string.Format("{0}-{1}.mysql", DateTime.Now.ToString(Constants.DateFormat), settings.Database);
             var backupDir = Path.GetFullPath(settings.BackupDirectory);

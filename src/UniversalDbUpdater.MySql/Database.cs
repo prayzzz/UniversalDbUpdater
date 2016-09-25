@@ -7,14 +7,14 @@ namespace UniversalDbUpdater.MySql
 {
     public class Database
     {
-        public static string ConnectionString(Settings settings)
+        public static string GetConnectionString(Settings settings)
         {
             return $"server={settings.Host};port={settings.Port};uid={settings.User};pwd={settings.Password};database={settings.Database};";
         }
 
         public static bool IsDbScriptsTableAvailable(Settings settings)
         {
-            using (var connection = new MySqlConnection(ConnectionString(settings)))
+            using (var connection = new MySqlConnection(GetConnectionString(settings)))
             {
                 if (!InitCommand.IsTableAvailable(connection))
                 {

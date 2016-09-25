@@ -55,7 +55,7 @@ namespace UniversalDbUpdater.MySql.Commands
             var localScripts = Directory.GetFiles(".", "*.mysql").Select(Path.GetFileName).ToList();
             var dbScripts = new List<DbScript>();
 
-            using (var sqlConnection = new MySqlConnection(Database.ConnectionString(settings)))
+            using (var sqlConnection = new MySqlConnection(Database.GetConnectionString(settings)))
             {
                 sqlConnection.Open();
 

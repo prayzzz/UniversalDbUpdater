@@ -11,7 +11,7 @@ namespace UniversalDbUpdater.MsSql
         //    var localScripts = Directory.GetFiles(".", "*.sql").Select(Path.GetFileName).ToList();
         //    var dbScripts = new List<DbScript>();
 
-        //    using (var sqlConnection = new SqlConnection(Program.ConnectionString))
+        //    using (var sqlConnection = new SqlConnection(Program.GetConnectionString))
         //    {
         //        sqlConnection.Open();
 

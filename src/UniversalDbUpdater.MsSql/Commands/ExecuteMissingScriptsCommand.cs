@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using UniversalDbUpdater.Common;
 
 namespace UniversalDbUpdater.MsSql.Commands
 {
-    /// <summary>
-    ///     /e
-    ///     Creates a backup before executing scripts if /b is supplied
-    /// </summary>
     public class ExecuteMissingScriptsCommand : ICommand
     {
+        private static readonly Regex GoRegexPattern = new Regex("^GO$", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         private static ExecuteMissingScriptsCommand _instance;
 
         private ExecuteMissingScriptsCommand()
@@ -19,55 +20,55 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public static ICommand Current => _instance ?? (_instance = new ExecuteMissingScriptsCommand());
 
-        public int Execute(IEnumerable<string> arguments)
+        public DatabaseType DatabaseType => DatabaseType.MySql;
+
+        public string[] Command => new[] { "-e", "--execute" };
+
+        public int Execute(IEnumerable<string> arguments, Settings settings)
         {
-            var list = DbScriptHelper.GetMissingScripts().ToList();
+            Console.WriteLine("Executing missing scripts...");
+            Console.WriteLine();
+
+            if (!Database.IsDbScriptsTableAvailable(settings))
+            {
+                return 1;
+            }
+
+            var list = ShowMissingScriptsCommand.GetMissingScripts(settings).ToList();
 
             if (!list.Any())
             {
-                Console.WriteLine("\t No missing scripts");
+                Console.WriteLine("No missing scripts");
                 return 0;
             }
 
-            var args = arguments.ToList();
-            if (args.Contains("/b"))
+            using (var connection = new SqlConnection(Database.GetConnectionString(settings)))
             {
-                BackupCommand.Current.Execute(args.Skip(1));
-                Console.WriteLine();
-            }
-
-            Console.WriteLine("Executing missing scripts:");
-            Console.WriteLine();
-
-            using (var sqlConnection = new SqlConnection(Program.ConnectionString))
-            {
-                sqlConnection.Open();
-                var server = new Server(new ServerConnection(sqlConnection));
+                connection.Open();
 
                 foreach (var scriptName in list)
                 {
-                    server.ConnectionContext.BeginTransaction();
+                    var transaction = connection.BeginTransaction();
 
                     Console.WriteLine("\t {0}", scriptName);
-                    var scriptContent = File.ReadAllText(scriptName);
+                    var scriptContent = GoRegexPattern.Replace(File.ReadAllText(scriptName), "--GO");
 
-                    try
+                    using (var command = new SqlCommand())
                     {
-                        server.ConnectionContext.ExecuteNonQuery(scriptContent);
+                        command.Connection = connection;
+                        command.CommandText = scriptContent;
+
+                        try
+                        {
+                            command.ExecuteNonQuery();
+                            transaction.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            transaction.Rollback();
+                            throw;
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        server.ConnectionContext.RollBackTransaction();
-
-                        Program.PrintException(ex);
-
-                        Console.WriteLine();
-                        Console.WriteLine("Script execution stopped");
-
-                        return 1;
-                    }
-
-                    server.ConnectionContext.CommitTransaction();
                 }
             }
 

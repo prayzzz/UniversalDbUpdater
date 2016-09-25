@@ -35,11 +35,11 @@ namespace UniversalDbUpdater.MySql.Commands
 
             if (!list.Any())
             {
-                Console.WriteLine("\t No missing scripts");
+                Console.WriteLine("No missing scripts");
                 return 0;
             }
 
-            using (var connection = new MySqlConnection(Database.ConnectionString(settings)))
+            using (var connection = new MySqlConnection(Database.GetConnectionString(settings)))
             {
                 connection.Open();
 
@@ -56,7 +56,7 @@ namespace UniversalDbUpdater.MySql.Commands
                         script.Query = scriptContent;
                         script.Execute();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         transaction.Rollback();
                         throw;
