@@ -22,13 +22,14 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
-            Console.WriteLine("Executing initialization...");
+            Console.WriteLine("Initializing database...");
+            Console.WriteLine();
 
-            using (var connection = new MySqlConnection(ConnectionString.Build(settings)))
+            using (var connection = new MySqlConnection(Database.ConnectionString(settings)))
             {
                 connection.Open();
 
-                if (IsSchemaAvailable(connection))
+                if (IsTableAvailable(connection))
                 {
                     Console.WriteLine("Table 'infrastructure.dbscripts' already exists");
                     return 0;
@@ -49,7 +50,7 @@ namespace UniversalDbUpdater.MySql.Commands
             }
         }
 
-        private static bool IsSchemaAvailable(MySqlConnection connection)
+        public static bool IsTableAvailable(MySqlConnection connection)
         {
             using (var command = new MySqlCommand("SHOW TABLES LIKE 'infrastructure.dbscripts'", connection))
             {
@@ -60,7 +61,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            Console.WriteLine("\t -i --init \t First time initialization.");
+            Console.WriteLine(" -i --init \t First time initialization.");
         }
     }
 }

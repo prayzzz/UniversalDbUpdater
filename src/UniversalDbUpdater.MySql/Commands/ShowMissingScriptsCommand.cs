@@ -23,21 +23,28 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
+            Console.WriteLine("Showing missing scripts...");
+            Console.WriteLine();
+
+            if (!Database.IsDbScriptsTableAvailable(settings))
+            {
+                return 1;
+            }
+
             var missingScripts = GetMissingScripts(settings).ToList();
 
             if (!missingScripts.Any())
             {
-                Console.WriteLine("\t No missing scripts");
+                Console.WriteLine("No missing scripts");
                 return 0;
             }
 
-
-            Console.WriteLine("\t {0} missing scripts", missingScripts.Count);
+            Console.WriteLine("{0} missing scripts", missingScripts.Count);
             Console.WriteLine();
 
             foreach (var missingScript in missingScripts)
             {
-                Console.WriteLine("\t {0}", missingScript);
+                Console.WriteLine("{0}", missingScript);
             }
 
             return 0;
@@ -45,10 +52,10 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public static IEnumerable<string> GetMissingScripts(Settings settings)
         {
-            var localScripts = Directory.GetFiles(".", "*.sql").Select(Path.GetFileName).ToList();
+            var localScripts = Directory.GetFiles(".", "*.mysql").Select(Path.GetFileName).ToList();
             var dbScripts = new List<DbScript>();
 
-            using (var sqlConnection = new MySqlConnection(ConnectionString.Build(settings)))
+            using (var sqlConnection = new MySqlConnection(Database.ConnectionString(settings)))
             {
                 sqlConnection.Open();
 
@@ -86,7 +93,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            Console.WriteLine("\t -s --show \t Shows scripts missing in database");
+            Console.WriteLine(" -s --show \t Shows scripts missing in database");
         }
     }
 }

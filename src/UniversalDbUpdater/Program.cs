@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.PlatformAbstractions;
 using UniversalDbUpdater.Common;
 using UniversalDbUpdater.MySql.Commands;
 
@@ -25,6 +24,7 @@ namespace UniversalDbUpdater
             Commands.Add("-c", CreateCommand.Current);
             Commands.Add("-s", ShowMissingScriptsCommand.Current);
             Commands.Add("-b", BackupCommand.Current);
+            Commands.Add("-e", ExecuteMissingScriptsCommand.Current);
 
             //Commands.Add("/b", BackupCommand.Current);
             //Commands.Add("/e", ExecuteMissingScriptsCommand.Current);
@@ -42,9 +42,6 @@ namespace UniversalDbUpdater
             LoadSettings();
 
             EvaluateArguments(args);
-
-            Console.WriteLine();
-            Console.ReadLine();
         }
 
         private static void LoadSettings()
@@ -73,7 +70,8 @@ namespace UniversalDbUpdater
 
         public static void ShowHelp(IEnumerable<string> arguments)
         {
-            Console.WriteLine("Help");
+            Console.WriteLine("How does it work?");
+            Console.WriteLine();
 
             foreach (var command in Commands.Values)
             {

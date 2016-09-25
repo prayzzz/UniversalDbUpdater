@@ -9,5 +9,5 @@
 --
 
 
-INSERT INTO [Infrastructure].[DbScripts] ([Date], [Name], [Description]) 
+INSERT INTO  `infrastructure.dbscripts` (`Date`, `Name`, `Description`) 
 VALUES ('##DATE##', '##NAME##', '##DESCRIPTION##');
