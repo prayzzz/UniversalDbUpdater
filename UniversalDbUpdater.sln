@@ -18,6 +18,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UniversalDbUpdater.MsSql", 
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UniversalDbUpdater.Common", "src\UniversalDbUpdater.Common\UniversalDbUpdater.Common.xproj", "{5C8B4C2C-A095-4D28-ADC7-A69363834A2E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{641E0DFF-B8E9-451A-A55B-33439C55790C}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UniversalDbUpdater.MySql.Test", "test\UniversalDbUpdater.MySql.Test\UniversalDbUpdater.MySql.Test.xproj", "{8FA24D42-BCB7-4C7E-9DEA-592C2D78D759}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,10 @@ Global
 		{5C8B4C2C-A095-4D28-ADC7-A69363834A2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C8B4C2C-A095-4D28-ADC7-A69363834A2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C8B4C2C-A095-4D28-ADC7-A69363834A2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FA24D42-BCB7-4C7E-9DEA-592C2D78D759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FA24D42-BCB7-4C7E-9DEA-592C2D78D759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FA24D42-BCB7-4C7E-9DEA-592C2D78D759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FA24D42-BCB7-4C7E-9DEA-592C2D78D759}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,5 +57,6 @@ Global
 		{5AE407D2-382D-46C1-9F40-162345337A00} = {1DDF9930-3B20-4C83-B645-E7611F6C9B5B}
 		{D7CAA0E9-91E0-4C64-B68A-5645EDB3BFB9} = {1DDF9930-3B20-4C83-B645-E7611F6C9B5B}
 		{5C8B4C2C-A095-4D28-ADC7-A69363834A2E} = {1DDF9930-3B20-4C83-B645-E7611F6C9B5B}
+		{8FA24D42-BCB7-4C7E-9DEA-592C2D78D759} = {641E0DFF-B8E9-451A-A55B-33439C55790C}
 	EndGlobalSection
 EndGlobal
