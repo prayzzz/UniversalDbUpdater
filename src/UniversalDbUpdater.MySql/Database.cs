@@ -16,6 +16,8 @@ namespace UniversalDbUpdater.MySql
         {
             using (var connection = new MySqlConnection(GetConnectionString(settings)))
             {
+                connection.Open();
+
                 if (!InitCommand.IsTableAvailable(connection))
                 {
                     Console.WriteLine("Table 'infrastructure.dbscripts' not available");

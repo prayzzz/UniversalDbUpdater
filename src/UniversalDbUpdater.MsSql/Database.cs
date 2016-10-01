@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 using UniversalDbUpdater.Common;
+using UniversalDbUpdater.MsSql.Commands;
 
 namespace UniversalDbUpdater.MsSql
 {
@@ -8,20 +9,22 @@ namespace UniversalDbUpdater.MsSql
     {
         public static string GetConnectionString(Settings settings)
         {
-            return $"server={settings.Host};port={settings.Port};uid={settings.User};pwd={settings.Password};database={settings.Database};";
+            return $"Server={settings.Host};Integrated Security={settings.IntegratedSecurity};Database={settings.Database}";
         }
 
         public static bool IsDbScriptsTableAvailable(Settings settings)
         {
             using (var connection = new SqlConnection(GetConnectionString(settings)))
             {
-                //if (!InitCommand.IsTableAvailable(connection))
-                //{
-                //    Console.WriteLine("Table 'infrastructure.dbscripts' not available");
-                //    Console.WriteLine("Use -i first");
+                connection.Open();
 
-                //    return false;
-                //}
+                if (!InitCommand.IsTableAvailable(connection))
+                {
+                    Console.WriteLine("Table [Infrastructure].[DbScripts] not available");
+                    Console.WriteLine("Use -i first");
+
+                    return false;
+                }
             }
 
             return true;

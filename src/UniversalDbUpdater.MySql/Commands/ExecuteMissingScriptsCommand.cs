@@ -9,22 +9,21 @@ namespace UniversalDbUpdater.MySql.Commands
 {
     public class ExecuteMissingScriptsCommand : ICommand
     {
-        private static ExecuteMissingScriptsCommand _instance;
+        private readonly IConsoleFacade _console;
 
-        private ExecuteMissingScriptsCommand()
+        public ExecuteMissingScriptsCommand(IConsoleFacade console)
         {
+            _console = console;
         }
-
-        public static ICommand Current => _instance ?? (_instance = new ExecuteMissingScriptsCommand());
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Command => new[] { "-e", "--execute" };
+        public string[] Parameters => new[] { "-e", "--execute" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
-            Console.WriteLine("Executing missing scripts...");
-            Console.WriteLine();
+            _console.WriteLine("Executing missing scripts...");
+            _console.WriteLine();
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
@@ -35,7 +34,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
             if (!list.Any())
             {
-                Console.WriteLine("No missing scripts");
+                _console.WriteLine("No missing scripts");
                 return 0;
             }
 
@@ -48,7 +47,7 @@ namespace UniversalDbUpdater.MySql.Commands
                     var script = new MySqlScript(connection);
                     var transaction = script.Connection.BeginTransaction();
 
-                    Console.WriteLine(" {0}", scriptName);
+                    _console.WriteLine($" {scriptName}");
                     var scriptContent = File.ReadAllText(scriptName);
 
                     try
@@ -71,7 +70,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            Console.WriteLine(" -e --execute \t Executes missing scripts");
+            _console.WriteLine(" -e --execute \t Executes missing scripts");
         }
     }
 }

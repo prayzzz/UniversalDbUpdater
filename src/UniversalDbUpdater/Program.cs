@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using UniversalDbUpdater.Common;
-using UniversalDbUpdater.MySql.Commands;
 
 namespace UniversalDbUpdater
 {
@@ -20,11 +19,11 @@ namespace UniversalDbUpdater
         static Program()
         {
             Commands = new Dictionary<string, ICommand>();
-            Commands.Add("-i", InitCommand.Current);
-            Commands.Add("-c", CreateCommand.Current);
-            Commands.Add("-s", ShowMissingScriptsCommand.Current);
-            Commands.Add("-b", BackupCommand.Current);
-            Commands.Add("-e", ExecuteMissingScriptsCommand.Current);
+            //Commands.Add("-i", InitCommand.Current);
+            //Commands.Add("-c", CreateCommand.Current);
+            //Commands.Add("-s", ShowMissingScriptsCommand.Current);
+            //Commands.Add("-b", BackupCommand.Current);
+            //Commands.Add("-e", ExecuteMissingScriptsCommand.Current);
 
             //Commands.Add("/b", BackupCommand.Current);
             //Commands.Add("/e", ExecuteMissingScriptsCommand.Current);

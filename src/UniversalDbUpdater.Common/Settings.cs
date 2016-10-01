@@ -15,5 +15,7 @@
         public string Password { get; set; }
 
         public string Database { get; set; }
+
+        public bool IntegratedSecurity { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("UniversalDbUpdater")]
+[assembly: AssemblyProduct("UniversalDbUpdater.MsSql.Test")]
 [assembly: AssemblyTrademark("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b6c76d97-9e90-4dcb-8444-e94630322ff8")]
+[assembly: Guid("b327bb16-7f73-4f3c-8b9b-ab3fe343e14a")]

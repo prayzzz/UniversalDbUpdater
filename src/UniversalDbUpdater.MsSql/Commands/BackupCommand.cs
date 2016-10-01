@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using UniversalDbUpdater.Common;
@@ -8,33 +7,34 @@ namespace UniversalDbUpdater.MsSql.Commands
 {
     public class BackupCommand : ICommand
     {
-        private static BackupCommand _instance;
+        private readonly IConsoleFacade _console;
+        private readonly IDateTimeFacade _dateTime;
 
-        private BackupCommand()
+        public BackupCommand(IConsoleFacade console, IDateTimeFacade dateTime)
         {
+            _console = console;
+            _dateTime = dateTime;
         }
-
-        public static ICommand Current => _instance ?? (_instance = new BackupCommand());
 
         public DatabaseType DatabaseType => DatabaseType.MsSql;
 
-        public string[] Command => new[] { "-b", "--backup" };
+        public string[] Parameters => new[] { "-b", "--backup" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
-            Console.WriteLine("Creating backup...");
-            Console.WriteLine();
+            _console.WriteLine("Creating backup...");
+            _console.WriteLine();
 
             using (var sqlConnection = new SqlConnection(Database.GetConnectionString(settings)))
             {
                 sqlConnection.Open();
 
-                var fileName = string.Format("{0}-{1}.bak", DateTime.Now.ToString(Constants.DateFormat), settings.Database);
+                var fileName = string.Format("{0}-{1}.bak", _dateTime.Now.ToString(Constants.DateFormat), settings.Database);
                 var backupDir = Path.GetFullPath(settings.BackupDirectory);
 
                 if (!Directory.Exists(backupDir))
                 {
-                    Console.WriteLine($"Creating directory {backupDir}");
+                    _console.WriteLine($"Creating directory {backupDir}");
                     Directory.CreateDirectory(backupDir);
                 }
 
@@ -46,9 +46,9 @@ namespace UniversalDbUpdater.MsSql.Commands
                     command.ExecuteNonQuery();
                 }
 
-                Console.WriteLine();
-                Console.WriteLine("Backup created");
-                Console.WriteLine("\t " + backFilePath);
+                _console.WriteLine();
+                _console.WriteLine("Backup created");
+                _console.WriteLine("\t " + backFilePath);
             }
 
             return 0;
@@ -56,7 +56,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public void HelpShort()
         {
-            Console.WriteLine(" -b --backup \t Creates a backup of the database");
+            _console.WriteLine(" -b --backup \t Creates a backup of the database");
         }
     }
 }

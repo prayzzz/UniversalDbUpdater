@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UniversalDbUpdater.Common;
-using UniversalDbUpdater.MySql.Commands;
+using UniversalDbUpdater.MsSql.Commands;
 using UniversalDbUpdater.Test;
 
-namespace UniversalDbUpdater.MySql.Test.Commands
+namespace UniversalDbUpdater.MsSql.Test.Commands
 {
     [TestFixture]
-    public class BackupCommandTest
+    public class BackupCommandTest2
     {
         private static readonly Settings Settings = Setup.Settings;
 
@@ -23,7 +23,7 @@ namespace UniversalDbUpdater.MySql.Test.Commands
 
             var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
 
-            Assert.AreEqual(DatabaseType.MySql, command.DatabaseType);
+            Assert.AreEqual(DatabaseType.MsSql, command.DatabaseType);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace UniversalDbUpdater.MySql.Test.Commands
             Assert.AreEqual(0, returnCode);
             Assert.True(Directory.Exists(Settings.BackupDirectory));
 
-            var expectedFilePath = Path.Combine(Settings.BackupDirectory, string.Format("{0}-{1}.mysql", now.ToString(Constants.DateFormat), Settings.Database));
+            var expectedFilePath = Path.Combine(Settings.BackupDirectory, string.Format("{0}-{1}.bak", now.ToString(Constants.DateFormat), Settings.Database));
             Assert.True(File.Exists(expectedFilePath));
 
             Directory.Delete(Settings.BackupDirectory, true);

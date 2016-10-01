@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Reflection;
-using MySql.Data.MySqlClient;
 using UniversalDbUpdater.Common;
 
-namespace UniversalDbUpdater.MySql.Commands
+namespace UniversalDbUpdater.MsSql.Commands
 {
     public class InitCommand : ICommand
     {
@@ -14,7 +14,7 @@ namespace UniversalDbUpdater.MySql.Commands
             _console = console;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MySql;
+        public DatabaseType DatabaseType => DatabaseType.MsSql;
 
         public string[] Parameters => new[] { "-i", "--init" };
 
@@ -23,37 +23,36 @@ namespace UniversalDbUpdater.MySql.Commands
             _console.WriteLine("Initializing database...");
             _console.WriteLine();
 
-            using (var connection = new MySqlConnection(Database.GetConnectionString(settings)))
+            using (var connection = new SqlConnection(Database.GetConnectionString(settings)))
             {
                 connection.Open();
 
                 if (IsTableAvailable(connection))
                 {
-                    _console.WriteLine("Table 'infrastructure.dbscripts' already exists");
+                    _console.WriteLine("Table 'Infrastructure.DbScripts' already exists");
                     return 0;
                 }
 
-                var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MySql.Resources.DbScriptsTable.mysql");
+                var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Resources.DbScriptsTable.mysql");
 
                 if (string.IsNullOrEmpty(script))
                 {
                     return 1;
                 }
 
-                using (var command = new MySqlCommand(script, connection))
+                using (var command = new SqlCommand(script, connection))
                 {
-                    _console.WriteLine("Creating table 'infrastructure.dbscripts'");
+                    _console.WriteLine("Creating table 'Infrastructure.DbScripts'");
                     return command.ExecuteNonQuery();
                 }
             }
         }
 
-        public static bool IsTableAvailable(MySqlConnection connection)
+        public static bool IsTableAvailable(SqlConnection connection)
         {
-            using (var command = new MySqlCommand("SHOW TABLES LIKE 'infrastructure.dbscripts'", connection))
+            using (var command = new SqlCommand("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Infrastructure' AND TABLE_NAME = 'DbScripts'", connection))
             {
-                var executeScalar = command.ExecuteScalar();
-                return executeScalar != null;
+                return command.ExecuteScalar() != null;
             }
         }
 

@@ -12,22 +12,21 @@ namespace UniversalDbUpdater.MsSql.Commands
     {
         private static readonly Regex GoRegexPattern = new Regex("^GO$", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-        private static ExecuteMissingScriptsCommand _instance;
+        private readonly IConsoleFacade _console;
 
-        private ExecuteMissingScriptsCommand()
+        public ExecuteMissingScriptsCommand(IConsoleFacade console)
         {
+            _console = console;
         }
 
-        public static ICommand Current => _instance ?? (_instance = new ExecuteMissingScriptsCommand());
+        public DatabaseType DatabaseType => DatabaseType.MsSql;
 
-        public DatabaseType DatabaseType => DatabaseType.MySql;
-
-        public string[] Command => new[] { "-e", "--execute" };
+        public string[] Parameters => new[] { "-e", "--execute" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
-            Console.WriteLine("Executing missing scripts...");
-            Console.WriteLine();
+            _console.WriteLine("Executing missing scripts...");
+            _console.WriteLine();
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
@@ -38,7 +37,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
             if (!list.Any())
             {
-                Console.WriteLine("No missing scripts");
+                _console.WriteLine("No missing scripts");
                 return 0;
             }
 
@@ -50,11 +49,12 @@ namespace UniversalDbUpdater.MsSql.Commands
                 {
                     var transaction = connection.BeginTransaction();
 
-                    Console.WriteLine("\t {0}", scriptName);
+                    _console.WriteLine($" {scriptName}");
                     var scriptContent = GoRegexPattern.Replace(File.ReadAllText(scriptName), "--GO");
 
                     using (var command = new SqlCommand())
                     {
+                        command.Transaction = transaction;
                         command.Connection = connection;
                         command.CommandText = scriptContent;
 
@@ -77,7 +77,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public void HelpShort()
         {
-            Console.WriteLine("\t /e \t Executes missing scripts");
+            _console.WriteLine("\t /e \t Executes missing scripts");
         }
     }
 }

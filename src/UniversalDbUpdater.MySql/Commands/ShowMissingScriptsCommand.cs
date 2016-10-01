@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MySql.Data.MySqlClient;
@@ -9,22 +8,21 @@ namespace UniversalDbUpdater.MySql.Commands
 {
     public class ShowMissingScriptsCommand : ICommand
     {
-        private static ShowMissingScriptsCommand _instance;
+        private readonly IConsoleFacade _console;
 
-        private ShowMissingScriptsCommand()
+        public ShowMissingScriptsCommand(IConsoleFacade console)
         {
+            _console = console;
         }
-
-        public static ICommand Current => _instance ?? (_instance = new ShowMissingScriptsCommand());
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Command => new[] { "-s", "--show" };
+        public string[] Parameters => new[] { "-s", "--show" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
-            Console.WriteLine("Showing missing scripts...");
-            Console.WriteLine();
+            _console.WriteLine("Showing missing scripts...");
+            _console.WriteLine();
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
@@ -35,16 +33,16 @@ namespace UniversalDbUpdater.MySql.Commands
 
             if (!missingScripts.Any())
             {
-                Console.WriteLine("No missing scripts");
+                _console.WriteLine("No missing scripts");
                 return 0;
             }
 
-            Console.WriteLine("{0} missing scripts", missingScripts.Count);
-            Console.WriteLine();
+            _console.WriteLine($"{missingScripts.Count} missing scripts");
+            _console.WriteLine();
 
             foreach (var missingScript in missingScripts)
             {
-                Console.WriteLine("{0}", missingScript);
+                _console.WriteLine(missingScript);
             }
 
             return 0;
@@ -93,7 +91,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            Console.WriteLine(" -s --show \t Shows scripts missing in database");
+            _console.WriteLine(" -s --show \t Shows scripts missing in database");
         }
     }
 }
