@@ -36,8 +36,8 @@ namespace UniversalDbUpdater.MySql.Test.Commands
 
             var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
 
-            Assert.Contains("-b", command.Parameters);
-            Assert.Contains("--backup", command.Parameters);
+            Assert.Contains("b", command.CommandName);
+            Assert.Contains("backup", command.CommandName);
         }
 
         [Test]

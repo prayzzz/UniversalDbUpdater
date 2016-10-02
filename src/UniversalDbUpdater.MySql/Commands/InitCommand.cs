@@ -16,7 +16,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Parameters => new[] { "-i", "--init" };
+        public string[] CommandName => new[] { "i", "init" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -59,7 +59,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -i --init \t First time initialization.");
+            _console.WriteLine(" i init \t First time initialization.");
         }
     }
 }

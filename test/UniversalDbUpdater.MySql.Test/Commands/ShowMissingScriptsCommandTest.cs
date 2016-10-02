@@ -33,8 +33,8 @@ namespace UniversalDbUpdater.MySql.Test.Commands
 
             var command = new ShowMissingScriptsCommand(consoleMock.Object);
 
-            Assert.Contains("-s", command.Parameters);
-            Assert.Contains("--show", command.Parameters);
+            Assert.Contains("s", command.CommandName);
+            Assert.Contains("show", command.CommandName);
         }
 
         [Test]

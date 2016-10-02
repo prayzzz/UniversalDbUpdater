@@ -19,7 +19,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Parameters => new[] { "-c", "--create" };
+        public string[] CommandName => new[] { "c", "create" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -54,7 +54,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -c --create \t Creates a new script file");
+            _console.WriteLine(" c create \t Creates a new script file");
         }
     }
 }

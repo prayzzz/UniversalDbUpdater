@@ -35,8 +35,8 @@ namespace UniversalDbUpdater.MsSql.Test.Commands
 
             var command = new ExecuteMissingScriptsCommand(consoleMock.Object);
 
-            Assert.Contains("-e", command.Parameters);
-            Assert.Contains("--execute", command.Parameters);
+            Assert.Contains("e", command.CommandName);
+            Assert.Contains("execute", command.CommandName);
         }
 
         [Test]

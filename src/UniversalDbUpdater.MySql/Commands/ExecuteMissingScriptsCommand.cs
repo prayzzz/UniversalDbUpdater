@@ -18,7 +18,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Parameters => new[] { "-e", "--execute" };
+        public string[] CommandName => new[] { "e", "execute" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -70,7 +70,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -e --execute \t Executes missing scripts");
+            _console.WriteLine(" e execute \t Executes missing scripts");
         }
     }
 }

@@ -29,8 +29,8 @@ namespace UniversalDbUpdater.MySql.Test.Commands
 
             var command = new InitCommand(consoleMock.Object);
 
-            Assert.Contains("-i", command.Parameters);
-            Assert.Contains("--init", command.Parameters);
+            Assert.Contains("i", command.CommandName);
+            Assert.Contains("init", command.CommandName);
         }
 
         [Test]

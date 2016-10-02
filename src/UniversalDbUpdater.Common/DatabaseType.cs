@@ -2,6 +2,7 @@
 {
     public enum DatabaseType
     {
+        Unknow,
         MySql,
         MsSql
     }

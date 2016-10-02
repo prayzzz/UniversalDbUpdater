@@ -18,7 +18,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MsSql;
 
-        public string[] Parameters => new[] { "-b", "--backup" };
+        public string[] CommandName => new[] { "b", "backup" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -56,7 +56,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -b --backup \t Creates a backup of the database");
+            _console.WriteLine(" b backup \t Creates a backup of the database");
         }
     }
 }

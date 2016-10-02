@@ -21,7 +21,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MsSql;
 
-        public string[] Parameters => new[] { "-e", "--execute" };
+        public string[] CommandName => new[] { "e", "execute" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -77,7 +77,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine("\t /e \t Executes missing scripts");
+            _console.WriteLine(" e execute \t Executes missing scripts");
         }
     }
 }

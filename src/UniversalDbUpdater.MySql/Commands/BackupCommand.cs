@@ -20,7 +20,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Parameters => new[] { "-b", "--backup" };
+        public string[] CommandName => new[] { "b", "backup" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -103,7 +103,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -b --backup \t Creates a backup of the database");
+            _console.WriteLine(" b backup \t Creates a backup of the database");
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,33 +13,24 @@ namespace UniversalDbUpdater
 
         private static IConfigurationRoot Configuration { get; set; }
         private static readonly Settings Settings = new Settings();
-        private static readonly Dictionary<string, ICommand> Commands;
+        private static readonly CommandLibrary CommandLibrary;
 
         static Program()
         {
-            Commands = new Dictionary<string, ICommand>();
-            //Commands.Add("-i", InitCommand.Current);
-            //Commands.Add("-c", CreateCommand.Current);
-            //Commands.Add("-s", ShowMissingScriptsCommand.Current);
-            //Commands.Add("-b", BackupCommand.Current);
-            //Commands.Add("-e", ExecuteMissingScriptsCommand.Current);
-
-            //Commands.Add("/b", BackupCommand.Current);
-            //Commands.Add("/e", ExecuteMissingScriptsCommand.Current);
-            //Commands.Add("/m", ShowMissingScriptsCommand.Current);
+            CommandLibrary = new CommandLibrary();
         }
 
 
         public static void Main(string[] args)
         {
-
             var logo = ResourceHelper.Current.GetEmbeddedFile(Assembly.GetEntryAssembly(), "UniversalDbUpdater.Resources.logo.txt");
             Console.WriteLine(logo);
             Console.WriteLine();
 
             LoadSettings();
 
-            EvaluateArguments(args);
+            var exitCode = EvaluateArguments(args);
+            Environment.Exit(exitCode);
         }
 
         private static void LoadSettings()
@@ -54,55 +44,63 @@ namespace UniversalDbUpdater
             Configuration.GetSection("Settings").Bind(Settings);
         }
 
-        public static void PrintException(Exception ex)
+        private static int EvaluateArguments(string[] args)
         {
-            Console.WriteLine("\t " + ex);
-            Console.WriteLine("\t " + ex.Message);
-
-            var inner = ex.InnerException;
-            while (inner != null)
+            if (args.Length < 1)
             {
-                Console.WriteLine("\t " + inner.Message);
-                inner = inner.InnerException;
+                Console.WriteLine("No command");
+                return -1;
             }
+
+            var commandName = args[0];
+            var typeString = FindArgument(args, "-t", "--type");
+
+            DatabaseType type;
+            if (!Enum.TryParse(typeString, true, out type))
+            {
+                type = DatabaseType.Unknow;
+            }
+
+            var command = CommandLibrary.Get(type, commandName);
+
+            if (command == null)
+            {
+                Console.WriteLine($"Unknown command: {commandName}");
+                return -1;
+            }
+
+            try
+            {
+                command.Execute(args.Skip(1), Settings);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception occured");
+                Console.WriteLine(ex);
+                return -1;
+            }
+
+            return 0;
         }
 
-        public static void ShowHelp(IEnumerable<string> arguments)
+        private static string FindArgument(string[] args, params string[] options)
         {
-            Console.WriteLine("How does it work?");
-            Console.WriteLine();
-
-            foreach (var command in Commands.Values)
+            foreach (var option in options)
             {
-                command.HelpShort();
-            }
-        }
-
-        private static void EvaluateArguments(IReadOnlyList<string> args)
-        {
-            if (args.Count < 1)
-            {
-                ShowHelp(new string[0]);
-                return;
-            }
-
-            ICommand command;
-            if (Commands.TryGetValue(args[0], out command))
-            {
-                try
+                var index = Array.IndexOf(args, option);
+                if (index < 0)
                 {
-                    command.Execute(args.Skip(1), Settings);
+                    continue;
                 }
-                catch (Exception ex)
+
+                var valueIndex = index + 1;
+                if (valueIndex < args.Length)
                 {
-                    Console.WriteLine("Exception occured");
-                    Console.WriteLine(ex);
+                    return args[valueIndex];
                 }
             }
-            else
-            {
-                ShowHelp(new string[0]);
-            }
+
+            return "";
         }
     }
 }

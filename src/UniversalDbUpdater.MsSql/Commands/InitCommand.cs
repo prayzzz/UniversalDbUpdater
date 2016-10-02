@@ -16,7 +16,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MsSql;
 
-        public string[] Parameters => new[] { "-i", "--init" };
+        public string[] CommandName => new[] { "i", "init" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -58,7 +58,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -i --init \t First time initialization.");
+            _console.WriteLine(" i init \t First time initialization.");
         }
     }
 }

@@ -34,8 +34,8 @@ namespace UniversalDbUpdater.MsSql.Test.Commands
 
             var command = new CreateCommand(consoleMock.Object, dateTimeMock.Object);
 
-            Assert.Contains("-c", command.Parameters);
-            Assert.Contains("--create", command.Parameters);
+            Assert.Contains("c", command.CommandName);
+            Assert.Contains("create", command.CommandName);
         }
 
         [Test]

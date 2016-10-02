@@ -17,7 +17,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public DatabaseType DatabaseType => DatabaseType.MySql;
 
-        public string[] Parameters => new[] { "-s", "--show" };
+        public string[] CommandName => new[] { "s", "show" };
 
         public int Execute(IEnumerable<string> arguments, Settings settings)
         {
@@ -91,7 +91,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public void HelpShort()
         {
-            _console.WriteLine(" -s --show \t Shows scripts missing in database");
+            _console.WriteLine(" s show \t Shows scripts missing in database");
         }
     }
 }
