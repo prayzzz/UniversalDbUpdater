@@ -4,7 +4,7 @@
     {
         public string BackupDirectory { get; set; }
 
-        public DatabaseType Type { get; set; }
+        public CommandType Type { get; set; }
 
         public string Host { get; set; }
 

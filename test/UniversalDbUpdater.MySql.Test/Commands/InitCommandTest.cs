@@ -19,7 +19,7 @@ namespace UniversalDbUpdater.MySql.Test.Commands
 
             var command = new InitCommand(consoleMock.Object);
 
-            Assert.AreEqual(DatabaseType.MySql, command.DatabaseType);
+            Assert.AreEqual(CommandType.MySql, command.CommandType);
         }
 
         [Test]

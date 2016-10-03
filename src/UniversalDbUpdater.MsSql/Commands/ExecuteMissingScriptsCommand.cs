@@ -19,7 +19,7 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console = console;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MsSql;
+        public CommandType CommandType => CommandType.MsSql;
 
         public string[] CommandName => new[] { "e", "execute" };
 
@@ -73,11 +73,6 @@ namespace UniversalDbUpdater.MsSql.Commands
             }
 
             return 0;
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" e execute \t Executes missing scripts");
         }
     }
 }

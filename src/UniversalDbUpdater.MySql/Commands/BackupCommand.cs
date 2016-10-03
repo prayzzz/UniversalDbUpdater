@@ -18,7 +18,7 @@ namespace UniversalDbUpdater.MySql.Commands
             _dateTime = dateTime;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MySql;
+        public CommandType CommandType => CommandType.MySql;
 
         public string[] CommandName => new[] { "b", "backup" };
 
@@ -99,11 +99,6 @@ namespace UniversalDbUpdater.MySql.Commands
             {
                 throw new Exception("'where' command is not on path");
             }
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" b backup \t Creates a backup of the database");
         }
     }
 }

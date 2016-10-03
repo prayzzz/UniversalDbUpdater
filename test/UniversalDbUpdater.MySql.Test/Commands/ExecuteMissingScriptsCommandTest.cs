@@ -25,7 +25,7 @@ namespace UniversalDbUpdater.MySql.Test.Commands
 
             var command = new ExecuteMissingScriptsCommand(consoleMock.Object);
 
-            Assert.AreEqual(DatabaseType.MySql, command.DatabaseType);
+            Assert.AreEqual(CommandType.MySql, command.CommandType);
         }
 
         [Test]

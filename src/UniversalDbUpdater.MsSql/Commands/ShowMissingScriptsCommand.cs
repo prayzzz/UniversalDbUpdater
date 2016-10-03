@@ -15,7 +15,7 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console = console;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MsSql;
+        public CommandType CommandType => CommandType.MsSql;
 
         public string[] CommandName => new[] { "s", "show" };
 
@@ -88,11 +88,6 @@ namespace UniversalDbUpdater.MsSql.Commands
             }
 
             return missingScripts;
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" s show \t Shows scripts missing in database");
         }
     }
 }

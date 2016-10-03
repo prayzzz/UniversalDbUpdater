@@ -16,7 +16,7 @@ namespace UniversalDbUpdater.MsSql.Commands
             _dateTime = dateTime;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MsSql;
+        public CommandType CommandType => CommandType.MsSql;
 
         public string[] CommandName => new[] { "b", "backup" };
 
@@ -52,11 +52,6 @@ namespace UniversalDbUpdater.MsSql.Commands
             }
 
             return 0;
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" b backup \t Creates a backup of the database");
         }
     }
 }

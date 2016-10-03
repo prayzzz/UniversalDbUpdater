@@ -14,7 +14,7 @@ namespace UniversalDbUpdater.MySql.Commands
             _console = console;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MySql;
+        public CommandType CommandType => CommandType.MySql;
 
         public string[] CommandName => new[] { "i", "init" };
 
@@ -55,11 +55,6 @@ namespace UniversalDbUpdater.MySql.Commands
                 var executeScalar = command.ExecuteScalar();
                 return executeScalar != null;
             }
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" i init \t First time initialization.");
         }
     }
 }

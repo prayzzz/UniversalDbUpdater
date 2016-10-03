@@ -14,7 +14,7 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console = console;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MsSql;
+        public CommandType CommandType => CommandType.MsSql;
 
         public string[] CommandName => new[] { "i", "init" };
 
@@ -54,11 +54,6 @@ namespace UniversalDbUpdater.MsSql.Commands
             {
                 return command.ExecuteScalar() != null;
             }
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" i init \t First time initialization.");
         }
     }
 }

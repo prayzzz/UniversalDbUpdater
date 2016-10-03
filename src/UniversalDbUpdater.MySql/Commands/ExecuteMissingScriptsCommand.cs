@@ -16,7 +16,7 @@ namespace UniversalDbUpdater.MySql.Commands
             _console = console;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MySql;
+        public CommandType CommandType => CommandType.MySql;
 
         public string[] CommandName => new[] { "e", "execute" };
 
@@ -66,11 +66,6 @@ namespace UniversalDbUpdater.MySql.Commands
             }
 
             return 0;
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" e execute \t Executes missing scripts");
         }
     }
 }

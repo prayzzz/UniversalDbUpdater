@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,17 +10,14 @@ namespace UniversalDbUpdater
 {
     public static class Program
     {
-        public const string DateFormat = "yyyy-MM-dd_HH-mm-ss";
-
-        private static IConfigurationRoot Configuration { get; set; }
         private static readonly Settings Settings = new Settings();
         private static readonly CommandLibrary CommandLibrary;
+        private static IConfigurationRoot _configuration;
 
         static Program()
         {
             CommandLibrary = new CommandLibrary();
         }
-
 
         public static void Main(string[] args)
         {
@@ -27,21 +25,22 @@ namespace UniversalDbUpdater
             Console.WriteLine(logo);
             Console.WriteLine();
 
-            LoadSettings();
+            LoadSettings(args);
 
             var exitCode = EvaluateArguments(args);
             Environment.Exit(exitCode);
         }
 
-        private static void LoadSettings()
+        private static void LoadSettings(string[] args)
         {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(Directory.GetCurrentDirectory());
             builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            builder.AddCommandLine(args, _switchMappings);
 
-            Configuration = builder.Build();
+            _configuration = builder.Build();
 
-            Configuration.GetSection("Settings").Bind(Settings);
+            _configuration.GetSection("Settings").Bind(Settings);
         }
 
         private static int EvaluateArguments(string[] args)
@@ -49,24 +48,23 @@ namespace UniversalDbUpdater
             if (args.Length < 1)
             {
                 Console.WriteLine("No command");
-                return -1;
+                return 1;
             }
 
             var commandName = args[0];
             var typeString = FindArgument(args, "-t", "--type");
 
-            DatabaseType type;
+            CommandType type;
             if (!Enum.TryParse(typeString, true, out type))
             {
-                type = DatabaseType.Unknow;
+                type = CommandType.Common;
             }
 
             var command = CommandLibrary.Get(type, commandName);
-
             if (command == null)
             {
                 Console.WriteLine($"Unknown command: {commandName}");
-                return -1;
+                return 1;
             }
 
             try
@@ -77,7 +75,7 @@ namespace UniversalDbUpdater
             {
                 Console.WriteLine("Exception occured");
                 Console.WriteLine(ex);
-                return -1;
+                return 1;
             }
 
             return 0;
@@ -102,5 +100,21 @@ namespace UniversalDbUpdater
 
             return "";
         }
+
+        private static Dictionary<string, string> _switchMappings = new Dictionary<string, string>
+        {
+            {"-d", "Settings:Database" },
+            {"--database", "Settings:Database" },
+            {"-h", "Settings:Host" },
+            {"--host", "Settings:Host" },
+            {"-o", "Settings:Port" },
+            {"--port", "Settings:Port" },
+            {"-p", "Settings:Password" },
+            {"--password", "Settings:Password" },
+            {"-t", "Settings:Type" },
+            {"--type", "Settings:Type" },
+            {"-u", "Settings:User" },
+            {"--user", "Settings:User" }
+        };
     }
 }

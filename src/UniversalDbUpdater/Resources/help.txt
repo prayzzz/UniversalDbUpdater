@@ -3,14 +3,19 @@
  universaldbupdater database-command -t type [options]
 
 Common Commands:
- h help         Shows this help
+ h help             Shows this help
  
 Database Commands:
- b backup       Creates a backup of the database
- c create       Creates a new script file
- e execute      Executes missing scripts
- i init         First time initialization
- s show         Shows scripts missing in database
+ b backup           Creates a backup of the database
+ c create           Creates a new script file
+ e execute          Executes missing scripts
+ i init             First time initialization
+ s show             Shows scripts missing in database
 
 Options:
- -t --type     Database type: mssql, mysql
+ -d --database      Database name
+ -h --host          Host address / ip  
+ -o --port          Host port
+ -p --password      Password
+ -t --type          Database type: mssql, mysql
+ -u --user          Username

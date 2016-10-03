@@ -6,16 +6,16 @@ namespace UniversalDbUpdater
 {
     public class CommandLibrary
     {
-        private readonly Dictionary<DatabaseType, Dictionary<string, ICommand>> _commandsByType;
+        private readonly Dictionary<CommandType, Dictionary<string, ICommand>> _commandsByType;
 
         public CommandLibrary()
         {
-            _commandsByType = new Dictionary<DatabaseType, Dictionary<string, ICommand>>();
+            _commandsByType = new Dictionary<CommandType, Dictionary<string, ICommand>>();
 
             DiscoverCommands();
         }
 
-        public ICommand Get(DatabaseType type, string parameter)
+        public ICommand Get(CommandType type, string parameter)
         {
             var commandsByCommandName = _commandsByType[type];
 
@@ -51,10 +51,10 @@ namespace UniversalDbUpdater
         private void AddCommand(ICommand command)
         {
             Dictionary<string, ICommand> commandsByCommandName;
-            if (!_commandsByType.TryGetValue(command.DatabaseType, out commandsByCommandName))
+            if (!_commandsByType.TryGetValue(command.CommandType, out commandsByCommandName))
             {
                 commandsByCommandName = new Dictionary<string, ICommand>();
-                _commandsByType.Add(command.DatabaseType, commandsByCommandName);
+                _commandsByType.Add(command.CommandType, commandsByCommandName);
             }
 
             foreach (var commandName in command.CommandName)

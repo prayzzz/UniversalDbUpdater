@@ -16,7 +16,8 @@
         },
         "UniversalDbUpdater.Common": "1.0.0-*",
         "UniversalDbUpdater.MySql": "1.0.0-*",
-        "UniversalDbUpdater.MsSql": "1.0.0-*"
+        "UniversalDbUpdater.MsSql": "1.0.0-*",
+        "Microsoft.Extensions.Configuration.CommandLine": "1.0.0"
     },
 
     "frameworks": {

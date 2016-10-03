@@ -17,7 +17,7 @@ namespace UniversalDbUpdater.MySql.Commands
             _dateTime = dateTime;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MySql;
+        public CommandType CommandType => CommandType.MySql;
 
         public string[] CommandName => new[] { "c", "create" };
 
@@ -50,11 +50,6 @@ namespace UniversalDbUpdater.MySql.Commands
             _console.WriteLine($"Script created: {script.FileNameWithoutExtension}");
 
             return 0;
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" c create \t Creates a new script file");
         }
     }
 }

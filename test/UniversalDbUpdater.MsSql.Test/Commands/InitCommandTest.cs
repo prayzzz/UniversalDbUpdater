@@ -19,7 +19,7 @@ namespace UniversalDbUpdater.MsSql.Test.Commands
 
             var command = new InitCommand(consoleMock.Object);
 
-            Assert.AreEqual(DatabaseType.MsSql, command.DatabaseType);
+            Assert.AreEqual(CommandType.MsSql, command.CommandType);
         }
 
         [Test]

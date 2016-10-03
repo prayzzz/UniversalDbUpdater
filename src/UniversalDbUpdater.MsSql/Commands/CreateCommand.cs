@@ -17,7 +17,7 @@ namespace UniversalDbUpdater.MsSql.Commands
             _dateTime = dateTime;
         }
 
-        public DatabaseType DatabaseType => DatabaseType.MsSql;
+        public CommandType CommandType => CommandType.MsSql;
 
         public string[] CommandName => new[] { "c", "create" };
 
@@ -50,11 +50,6 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console.WriteLine($"Created script {script.FileNameWithoutExtension}");
 
             return 0;
-        }
-
-        public void HelpShort()
-        {
-            _console.WriteLine(" c create \t Creates a new script file");
         }
     }
 }

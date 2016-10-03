@@ -4,7 +4,7 @@ namespace UniversalDbUpdater.Common
 {
     public interface ICommand
     {
-        DatabaseType DatabaseType { get; }
+        CommandType CommandType { get; }
 
         string[] CommandName { get; }
 

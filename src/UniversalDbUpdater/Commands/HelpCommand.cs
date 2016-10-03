@@ -7,7 +7,7 @@ namespace UniversalDbUpdater.Commands
 {
     public class HelpCommand : ICommand
     {
-        public DatabaseType DatabaseType => DatabaseType.Unknow;
+        public CommandType CommandType => CommandType.Common;
 
         public string[] CommandName => new[] { "h", "help" };
 

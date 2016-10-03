@@ -1,8 +1,8 @@
 ﻿namespace UniversalDbUpdater.Common
 {
-    public enum DatabaseType
+    public enum CommandType
     {
-        Unknow,
+        Common,
         MySql,
         MsSql
     }

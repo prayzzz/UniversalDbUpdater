@@ -23,7 +23,7 @@ namespace UniversalDbUpdater.MsSql.Test.Commands
 
             var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
 
-            Assert.AreEqual(DatabaseType.MsSql, command.DatabaseType);
+            Assert.AreEqual(CommandType.MsSql, command.CommandType);
         }
 
         [Test]
