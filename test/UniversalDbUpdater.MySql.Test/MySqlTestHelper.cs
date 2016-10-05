@@ -38,7 +38,7 @@ namespace UniversalDbUpdater.MySql.Test
                 connection.Open();
                 connection.ChangeDatabase(database);
 
-                using (var command = new MySqlCommand("DROP SCHEMA [Infrastructure] \n DROP TABLE `infrastructure.dbscripts`", connection))
+                using (var command = new MySqlCommand("DROP TABLE `infrastructure.dbscripts`", connection))
                 {
                     command.ExecuteNonQuery();
                     Console.WriteLine("## TestHelper: DbScripts table dropped");
