@@ -31,12 +31,20 @@ namespace UniversalDbUpdater
             Environment.Exit(exitCode);
         }
 
-        private static void LoadSettings(string[] args)
+        private static void LoadSettings(IReadOnlyList<string> args)
         {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(Directory.GetCurrentDirectory());
             builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-            builder.AddCommandLine(args, _switchMappings);
+
+            // remove command from args
+            var strippedArgs = args.ToArray();
+            if (args.Count > 0 && !args[0].StartsWith("-") && !args[0].StartsWith("--"))
+            {
+                strippedArgs = strippedArgs.Skip(1).ToArray();
+            }
+
+            builder.AddCommandLine(strippedArgs, SwitchMappings);
 
             _configuration = builder.Build();
 
@@ -52,15 +60,8 @@ namespace UniversalDbUpdater
             }
 
             var commandName = args[0];
-            var typeString = FindArgument(args, "-t", "--type");
+            var command = CommandLibrary.Get(Settings.Type, commandName);
 
-            CommandType type;
-            if (!Enum.TryParse(typeString, true, out type))
-            {
-                type = CommandType.Common;
-            }
-
-            var command = CommandLibrary.Get(type, commandName);
             if (command == null)
             {
                 Console.WriteLine($"Unknown command: {commandName}");
@@ -70,6 +71,7 @@ namespace UniversalDbUpdater
             try
             {
                 command.Execute(args.Skip(1), Settings);
+                Console.WriteLine();
             }
             catch (Exception ex)
             {
@@ -81,38 +83,26 @@ namespace UniversalDbUpdater
             return 0;
         }
 
-        private static string FindArgument(string[] args, params string[] options)
-        {
-            foreach (var option in options)
-            {
-                var index = Array.IndexOf(args, option);
-                if (index < 0)
-                {
-                    continue;
-                }
-
-                var valueIndex = index + 1;
-                if (valueIndex < args.Length)
-                {
-                    return args[valueIndex];
-                }
-            }
-
-            return "";
-        }
-
-        private static Dictionary<string, string> _switchMappings = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> SwitchMappings = new Dictionary<string, string>
         {
             {"-d", "Settings:Database" },
             {"--database", "Settings:Database" },
+
             {"-h", "Settings:Host" },
             {"--host", "Settings:Host" },
+
+            {"-i", "Settings:IntegratedSecurity" },
+            {"--iSecurity", "Settings:IntegratedSecurity" },
+
             {"-o", "Settings:Port" },
             {"--port", "Settings:Port" },
+
             {"-p", "Settings:Password" },
             {"--password", "Settings:Password" },
+
             {"-t", "Settings:Type" },
             {"--type", "Settings:Type" },
+
             {"-u", "Settings:User" },
             {"--user", "Settings:User" }
         };

@@ -14,7 +14,8 @@ Database Commands:
 
 Options:
  -d --database      Database name
- -h --host          Host address / ip  
+ -h --host          Host address / ip 
+ -i --iSecurity     Integrated Security (for mssql) 
  -o --port          Host port
  -p --password      Password
  -t --type          Database type: mssql, mysql
