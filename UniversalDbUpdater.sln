@@ -7,7 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1DDF9930-3B2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EA3292B-57DA-4543-90EB-5EFB9222CC4A}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		global.json = global.json
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UniversalDbUpdater", "src\UniversalDbUpdater\UniversalDbUpdater.xproj", "{B6C76D97-9E90-4DCB-8444-E94630322FF8}"
@@ -25,6 +28,11 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UniversalDbUpdater.MsSql.Test", "test\UniversalDbUpdater.MsSql.Test\UniversalDbUpdater.MsSql.Test.xproj", "{B327BB16-7F73-4F3C-8B9B-AB3FE343E14A}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "UniversalDbUpdater.Test", "test\UniversalDbUpdater.Test\UniversalDbUpdater.Test.xproj", "{E934B895-3180-46E1-8F50-D8111C6C6763}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{EB9E0E7C-A3AC-4CDF-B378-EA34D45AC9B0}"
+	ProjectSection(SolutionItems) = preProject
+		build\psakefile.ps1 = build\psakefile.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

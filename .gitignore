@@ -243,3 +243,4 @@ ModelManifest.xml
 
 /dist/
 TestResult.*.xml
+/nuget/

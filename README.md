@@ -1,0 +1,1 @@
+Icon by PICOL (https://www.iconfinder.com/iconsets/picol-vector)

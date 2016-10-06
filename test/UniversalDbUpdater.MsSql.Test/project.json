@@ -9,8 +9,8 @@
 
     "dependencies": {
         "dotnet-test-nunit": "3.4.0-beta-2",
-        "UniversalDbUpdater.MsSql": "1.0.0-*",
-        "UniversalDbUpdater.Common": "1.0.0-*",
+        "UniversalDbUpdater.MsSql": "*",
+        "UniversalDbUpdater.Common": "*",
         "Moq": "4.6.38-alpha",
         "UniversalDbUpdater.Test": "1.0.0-*",
         "NUnit": "3.5.0"

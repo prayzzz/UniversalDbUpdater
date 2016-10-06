@@ -1,8 +1,8 @@
 properties {
     Import-Module psake-contrib/teamcity.psm1
 
-
     $config = "Debug"    
+    $outputFolder = "dist/"
 
     $date = Get-Date -Format yyyy.MM.dd;
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
@@ -31,7 +31,10 @@ task Restore -depends Dotnet-Restore {
 task Build -depends Dotnet-Build {    
 }
 
-task Test -depends Dotnet-Test{    
+task Test -depends Dotnet-Test {    
+}
+
+task Pack -depends Dotnet-Pack {    
 }
 
 task Publish -depends Zip-Dotnet-Publish {    
@@ -43,50 +46,42 @@ task Dotnet-Restore {
     exec { dotnet restore }
 }
 
-task Dotnet-Build -depends Dotnet-Restore {
+task Set-Version {
+    Apply-Version("src/UniversalDbUpdater/project.json")
+    Apply-Version("src/UniversalDbUpdater/appsettings.json")
+    Apply-Version("src/UniversalDbUpdater.Common/project.json")
+    Apply-Version("src/UniversalDbUpdater.MsSql/project.json")
+    Apply-Version("src/UniversalDbUpdater.MySql/project.json")
+}
+
+task Dotnet-Build -depends Dotnet-Restore, Set-Version {
     exec { dotnet build "src/UniversalDbUpdater/" --configuration $config }
 }
 
-task Dotnet-Test -depends Dotnet-Restore {
-    if ($isTeamCity) {
-        TeamCity-TestSuiteStarted mobtima.Common.Test 
-        exec { dotnet test "test/UniversalDbUpdater.MsSql.Test/" --configuration $config --result TestResult.UniversalDbUpdater.MsSql.xml }
-        TeamCity-TestSuiteFinished mobtima.Common.Test 
-
-        TeamCity-TestSuiteStarted mobtima.Domain.Test 
-        exec { dotnet test "test/UniversalDbUpdater.MySql.Test/" --configuration $config --result TestResult.UniversalDbUpdater.MySql.xml }
-        TeamCity-TestSuiteFinished mobtima.Domain.Test
-    } 
-    else {
-        exec { dotnet test "test/UniversalDbUpdater.MsSql.Test/" --configuration $config --result TestResult.UniversalDbUpdater.MsSql.xml }
-        exec { dotnet test "test/UniversalDbUpdater.MySql.Test/" --configuration $config --result TestResult.UniversalDbUpdater.MySql.xml }
-    }    
+task Dotnet-Test -depends Dotnet-Build {
+    Run-Test("UniversalDbUpdater.MsSql.Test")
+    Run-Test("UniversalDbUpdater.MySql.Test")    
 }
 
-task Set-Version {
-    $project = ConvertFrom-Json -InputObject (Gc "src/UniversalDbUpdater/project.json" -Raw)
-    $project.version = $version
-    $project | ConvertTo-Json -depth 100 | Out-File "src/UniversalDbUpdater/project.json"
-
-
-    $settings = ConvertFrom-Json -InputObject (Gc "src/UniversalDbUpdater/appsettings.json" -Raw)
-    $settings.version = $version
-    $settings | ConvertTo-Json -depth 100 | Out-File "src/UniversalDbUpdater/appsettings.json"
+task Dotnet-Publish -depends Dotnet-Build, Dotnet-Test {
+    exec { dotnet publish "src/UniversalDbUpdater/" --configuration $config --no-build }
 }
 
-task Dotnet-Publish -depends Dotnet-Restore, Dotnet-Test, Set-Version {
-    exec { dotnet publish "src/UniversalDbUpdater/" --configuration $config }
+task Dotnet-Pack -depends Dotnet-Build {
+    exec { dotnet pack "src/UniversalDbUpdater/" --configuration $config --no-build --output $outputFolder }
+    exec { dotnet pack "src/UniversalDbUpdater.Common/" --configuration $config --no-build --output $outputFolder }
+    exec { dotnet pack "src/UniversalDbUpdater.MsSql/" --configuration $config --no-build --output $outputFolder }
+    exec { dotnet pack "src/UniversalDbUpdater.MySql/" --configuration $config --no-build --output $outputFolder }
 } 
 
 task Zip-Dotnet-Publish -depends Dotnet-Publish {
     exec {        
         $source = "src/UniversalDbUpdater/bin/$config/netcoreapp1.0/publish"
-        $destinationFolder = "dist/"
         $destinationFile = "UniversalDbUpdater-$version.zip"
-        $destinationPath = $destinationFolder + $destinationFile        
+        $destinationPath = $outputFolder + $destinationFile        
 
-        If(!(Test-path $destinationFolder)) {            
-            mkdir $destinationFolder
+        If(!(Test-path $outputFolder)) {            
+            mkdir $outputFolder
         }        
 
         If(Test-path $destinationPath) {            
@@ -98,4 +93,22 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
 
         Write-Host "Created $destinationPath"
     }
+}
+
+function Apply-Version ($file) {
+    $project = ConvertFrom-Json -InputObject (Gc $file -Raw)
+    $project.version = $version
+    $project | ConvertTo-Json -depth 100 | Out-File $file
+}
+
+function Run-Test ($project) {
+    if ($isTeamCity) {
+        TeamCity-TestSuiteStarted $project 
+    }
+    
+    exec { dotnet test "test/$project/" --configuration $config --no-build --result "TestResult.$project.xml" }
+
+    if ($isTeamCity) {
+        TeamCity-TestSuiteFinished $project 
+    }        
 }
