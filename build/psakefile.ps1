@@ -105,7 +105,7 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
 function Apply-Version ($file) {
     $project = ConvertFrom-Json -InputObject (Gc $file -Raw)
     $project.version = $version
-    $project | ConvertTo-Json -depth 999 | Out-File $file
+    $project | ConvertTo-Json -depth 100 | Out-File $file
 }
 
 function Run-Test ($project) {
