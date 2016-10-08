@@ -45,9 +45,10 @@ namespace UniversalDbUpdater.MsSql.Commands
             file = file.Replace("##NAME##", script.Name);
             file = file.Replace("##DESCRIPTION##", script.Description);
 
-            File.WriteAllText(script.FileNameWithoutExtension + ".sql", file);
+            var scriptFile = Path.GetFullPath(Path.Combine(settings.ScriptsDirectory, script.FileNameWithoutExtension + ".sql"));
+            File.WriteAllText(scriptFile, file);
 
-            _console.WriteLine($"Created script {script.FileNameWithoutExtension}");
+            _console.WriteLine($"Script created: {scriptFile}");
 
             return 0;
         }

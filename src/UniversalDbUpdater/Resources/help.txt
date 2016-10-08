@@ -13,10 +13,12 @@ Database Commands:
  s show             Shows scripts missing in database
 
 Options:
- -d --database      Database name
- -h --host          Host address / ip 
- -i --iSecurity     Integrated Security (for mssql) 
- -o --port          Host port
- -p --password      Password
- -t --type          Database type: mssql, mysql
- -u --user          Username
+ --backup        Backup Directory (Default: ./backup/ )
+ --database      Database name
+ --host          Host address / ip 
+ --isecurity     Integrated Security (for mssql) 
+ --port          Host port
+ --password      Password
+ --scripts       Scripts Directory (Default: ./ )
+ --type          Database type: mssql, mysql
+ --user          Username

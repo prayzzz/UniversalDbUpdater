@@ -25,7 +25,7 @@ namespace UniversalDbUpdater.MySql.Commands
         {
             _console.WriteLine("Creating new script...");
             _console.WriteLine();
-            
+
             var script = new DbScript();
             script.Name = arguments.FirstOrDefault();
 
@@ -45,9 +45,11 @@ namespace UniversalDbUpdater.MySql.Commands
             file = file.Replace("##NAME##", script.Name);
             file = file.Replace("##DESCRIPTION##", script.Description);
 
-            File.WriteAllText(script.FileNameWithoutExtension + ".mysql", file);
+            var scriptFile = Path.Combine(settings.ScriptsDirectory, script.FileNameWithoutExtension + ".mysql");
+            File.WriteAllText(scriptFile, file);
 
-            _console.WriteLine($"Script created: {script.FileNameWithoutExtension}");
+            _console.WriteLine();
+            _console.WriteLine($"Script created: {scriptFile}");
 
             return 0;
         }

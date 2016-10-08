@@ -28,17 +28,16 @@ namespace UniversalDbUpdater.MySql.Commands
             _console.WriteLine();
 
             var fileName = string.Format("{0}-{1}.mysql", _dateTime.Now.ToString(Constants.DateFormat), settings.Database);
-            var backupDir = Path.GetFullPath(settings.BackupDirectory);
-            var backFilePath = Path.Combine(backupDir, fileName);
+            var backupFile = Path.Combine(settings.BackupDirectory, fileName);
 
-            if (!Directory.Exists(backupDir))
+            if (!Directory.Exists(settings.BackupDirectory))
             {
-                _console.WriteLine($"Creating directory {backupDir}");
-                Directory.CreateDirectory(backupDir);
+                Directory.CreateDirectory(settings.BackupDirectory);
+                _console.WriteLine($"Directory created: {settings.BackupDirectory}");
             }
 
             var mysqlDump = GetMySqlDump();
-            var cmd = $"{settings.Database} --host={settings.Host} --port={settings.Port} --user={settings.User} --password={settings.Password} --compress --result-file={backFilePath}";
+            var cmd = $"{settings.Database} --host={settings.Host} --port={settings.Port} --user={settings.User} --password={settings.Password} --compress --result-file={backupFile}";
 
             var p = Process.Start(mysqlDump, cmd);
             p.WaitForExit();
@@ -49,8 +48,7 @@ namespace UniversalDbUpdater.MySql.Commands
             }
 
             _console.WriteLine();
-            _console.WriteLine("Backup created");
-            _console.WriteLine("\t " + backFilePath);
+            _console.WriteLine($"Backup created: {backupFile}");
 
             return p.ExitCode;
         }

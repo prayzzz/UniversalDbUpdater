@@ -25,13 +25,17 @@ namespace UniversalDbUpdater
             Console.WriteLine(logo);
             Console.WriteLine();
 
-            LoadSettings(args);
+            var exitCode = LoadSettings(args);
+            if (exitCode != 0)
+            {
+                Exit(exitCode);
+            }
 
-            var exitCode = EvaluateArguments(args);
-            Environment.Exit(exitCode);
+            exitCode = EvaluateArguments(args);
+            Exit(exitCode);
         }
 
-        private static void LoadSettings(IReadOnlyList<string> args)
+        private static int LoadSettings(IReadOnlyList<string> args)
         {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(Directory.GetCurrentDirectory());
@@ -46,9 +50,19 @@ namespace UniversalDbUpdater
 
             builder.AddCommandLine(strippedArgs, SwitchMappings);
 
-            _configuration = builder.Build();
+            try
+            {
+                _configuration = builder.Build();
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine("Exception occured");
+                Console.WriteLine(ex);
+                return 1;
+            }
 
             _configuration.GetSection("Settings").Bind(Settings);
+            return 0;
         }
 
         private static int EvaluateArguments(string[] args)
@@ -83,27 +97,30 @@ namespace UniversalDbUpdater
             return 0;
         }
 
+        private static void Exit(int exitCode)
+        {
+            Console.WriteLine($"Exit Code: {exitCode}");
+            Environment.Exit(exitCode);
+        }
+
         private static readonly Dictionary<string, string> SwitchMappings = new Dictionary<string, string>
         {
-            {"-d", "Settings:Database" },
+            {"--backup", "Settings:BackupDirectory" },
+
             {"--database", "Settings:Database" },
 
-            {"-h", "Settings:Host" },
             {"--host", "Settings:Host" },
 
-            {"-i", "Settings:IntegratedSecurity" },
-            {"--iSecurity", "Settings:IntegratedSecurity" },
+            {"--isecurity", "Settings:IntegratedSecurity" },
 
-            {"-o", "Settings:Port" },
             {"--port", "Settings:Port" },
 
-            {"-p", "Settings:Password" },
             {"--password", "Settings:Password" },
 
-            {"-t", "Settings:Type" },
+            {"--scripts", "Settings:ScriptsDirectory" },
+
             {"--type", "Settings:Type" },
 
-            {"-u", "Settings:User" },
             {"--user", "Settings:User" }
         };
     }

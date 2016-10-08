@@ -38,8 +38,8 @@ namespace UniversalDbUpdater.MsSql.Commands
                     Directory.CreateDirectory(backupDir);
                 }
 
-                var backFilePath = Path.Combine(backupDir, fileName);
-                var query = string.Format("BACKUP DATABASE [{0}] TO DISK='{1}'", settings.Database, backFilePath);
+                var backupFile = Path.Combine(backupDir, fileName);
+                var query = string.Format("BACKUP DATABASE [{0}] TO DISK='{1}'", settings.Database, backupFile);
 
                 using (var command = new SqlCommand(query, sqlConnection))
                 {
@@ -47,8 +47,7 @@ namespace UniversalDbUpdater.MsSql.Commands
                 }
 
                 _console.WriteLine();
-                _console.WriteLine("Backup created");
-                _console.WriteLine("\t " + backFilePath);
+                _console.WriteLine($"Backup created: {backupFile}");
             }
 
             return 0;

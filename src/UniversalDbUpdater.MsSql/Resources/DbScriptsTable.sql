@@ -1,4 +1,6 @@
-﻿CREATE TABLE [Infrastructure].[DbScripts](
+﻿CREATE SCHEMA [Infrastructure]
+
+CREATE TABLE [Infrastructure].[DbScripts](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Date] [datetime] NOT NULL,
 	[Name] [varchar](255) NOT NULL,

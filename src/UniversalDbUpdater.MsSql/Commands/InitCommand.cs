@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Reflection;
 using UniversalDbUpdater.Common;
 
@@ -33,11 +34,11 @@ namespace UniversalDbUpdater.MsSql.Commands
                     return 0;
                 }
 
-                var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Resources.DbScriptsTable.mysql");
+                var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Resources.DbScriptsTable.sql");
 
                 if (string.IsNullOrEmpty(script))
                 {
-                    return 1;
+                    throw new FileNotFoundException("UniversalDbUpdater.MsSql.Resources.DbScriptsTable.sql");
                 }
 
                 using (var command = new SqlCommand(script, connection))

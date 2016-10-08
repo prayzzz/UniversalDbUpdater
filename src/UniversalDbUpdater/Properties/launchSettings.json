@@ -2,7 +2,7 @@
   "profiles": {
     "UniversalDbUpdater": {
       "commandName": "Project",
-      "commandLineArgs": "show --type mysql"
+      "commandLineArgs": "show --type \"mssql\" --host \"(LocalDb)\\MSSQLLocalDB\" --isecurity true --database \"updater\" --scripts \"./scripts\""
     }
   }
 }
