@@ -10,7 +10,7 @@ namespace UniversalDbUpdater.Test.MsSql
     {
         public static void CreateScriptsTable(string connectionString, string database)
         {
-            var script = ResourceHelper.Current.GetEmbeddedFile(typeof(MsSqlTestHelper).GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Test.Resources.DbScriptsTable.sql");
+            var script = ResourceHelper.Current.GetEmbeddedFile(typeof(MsSqlTestHelper).GetTypeInfo().Assembly, "UniversalDbUpdater.Test.MsSql.Resources.DbScriptsTable.sql");
 
             if (string.IsNullOrEmpty(script))
             {

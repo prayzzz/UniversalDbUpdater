@@ -13,7 +13,7 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
         private const string Script01 = "2016-10-01_18-00-00_Script01.sql";
         private const string Script02 = "2016-10-01_19-00-00_Script02.sql";
 
-        private static readonly Settings Settings = Setup.Settings;
+        private static readonly Settings Settings = Setup.MsSqlSettings;
 
         [Test]
         public void Test_Type()
@@ -42,10 +42,10 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
             MsSqlTestHelper.CreateScriptsTable(Setup.MsSqlConnectionString, Settings.Database);
 
             // copy scripts from resources
-            var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, $"UniversalDbUpdater.MsSql.Test.Resources.{Script01}");
+            var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, $"UniversalDbUpdater.Test.MsSql.Resources.{Script01}");
             File.WriteAllText(Script01, script);
 
-            script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, $"UniversalDbUpdater.MsSql.Test.Resources.{Script02}");
+            script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, $"UniversalDbUpdater.Test.MsSql.Resources.{Script02}");
             File.WriteAllText(Script02, script);
 
             var missingScripts = ShowMissingScriptsCommand.GetMissingScripts(Settings);

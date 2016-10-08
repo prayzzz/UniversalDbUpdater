@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UniversalDbUpdater.Common;
 
 namespace UniversalDbUpdater.MsSql.Commands
 {
     public class ExecuteMissingScriptsCommand : ICommand
     {
+        private static readonly Regex GoRegexPattern = new Regex("^GO", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private readonly IConsoleFacade _console;
 
         public ExecuteMissingScriptsCommand(IConsoleFacade console)
@@ -54,8 +56,8 @@ namespace UniversalDbUpdater.MsSql.Commands
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
-
-                        foreach (var sqlBatch in scriptContent.Split(new[] { "GO", "Go", "go" }, StringSplitOptions.RemoveEmptyEntries))
+                        
+                        foreach (var sqlBatch in GoRegexPattern.Split(scriptContent))
                         {
                             command.CommandText = sqlBatch;
 

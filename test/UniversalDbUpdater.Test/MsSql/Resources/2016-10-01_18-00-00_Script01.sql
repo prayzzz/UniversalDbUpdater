@@ -31,6 +31,9 @@ CREATE TABLE [Account].[User](
 
 GO
 
+-- error when splitting on string "go" instead of regex:
+-- go '" asd 
+
 --
 -- Update Info
 --

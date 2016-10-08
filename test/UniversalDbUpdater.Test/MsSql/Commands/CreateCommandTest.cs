@@ -52,7 +52,7 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
 
             var command = new CreateCommand(consoleMock.Object, dateTimeMock.Object);
 
-            var returnCode = command.Execute(new List<string> { name }, Setup.Settings);
+            var returnCode = command.Execute(new List<string> { name }, Setup.MsSqlSettings);
 
             Assert.AreEqual(0, returnCode);
 

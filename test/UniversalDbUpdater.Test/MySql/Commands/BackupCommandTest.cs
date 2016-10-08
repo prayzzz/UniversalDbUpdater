@@ -10,7 +10,7 @@ namespace UniversalDbUpdater.Test.MySql.Commands
     [TestFixture]
     public class BackupCommandTest
     {
-        private static readonly Settings Settings = Setup.Settings;
+        private static readonly Settings Settings = Setup.MySqlSettings;
 
         [Test]
         public void Test_Type()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using NUnit.Framework;
 using UniversalDbUpdater.Common;
@@ -12,11 +13,12 @@ namespace UniversalDbUpdater.Test
         public const string MySqlConnectionString = "server=127.0.0.1;port=3306;uid=root;pwd=admin;";
         private const string DbName = "UniversalDbUpdaterTest";
 
-        public static readonly Settings Settings;
+        public static readonly Settings MySqlSettings;
+        public static readonly Settings MsSqlSettings;
 
         static Setup()
         {
-            Settings = new Settings
+            MySqlSettings = new Settings
             {
                 Host = "127.0.0.1",
                 Port = 3306,
@@ -24,6 +26,14 @@ namespace UniversalDbUpdater.Test
                 Password = "admin",
                 Database = DbName,
                 BackupDirectory = "./backup"
+            };
+
+            MsSqlSettings = new Settings
+            {
+                Host = @"(localdb)\MSSQLLocalDB",
+                Database = DbName,
+                BackupDirectory = "./backup",
+                IntegratedSecurity = true
             };
         }
 
@@ -53,6 +63,26 @@ namespace UniversalDbUpdater.Test
                 }
             }
 
+            using (var connection = new SqlConnection(MsSqlConnectionString))
+            {
+                connection.Open();
+
+                if (IsDatabaseAvailable(connection, DbName))
+                {
+                    using (var command = new SqlCommand($"DROP DATABASE {DbName}", connection))
+                    {
+                        command.ExecuteNonQuery();
+                        Console.WriteLine("Database dropped");
+                    }
+                }
+
+                using (var command = new SqlCommand($"CREATE DATABASE {DbName}", connection))
+                {
+                    command.ExecuteNonQuery();
+                    Console.WriteLine("Database created");
+                }
+            }
+
             Console.WriteLine("## Setup end");
             Console.WriteLine(" ");
         }
@@ -72,6 +102,15 @@ namespace UniversalDbUpdater.Test
                 Console.WriteLine("Database dropped");
             }
 
+            using (var connection = new SqlConnection(MsSqlConnectionString))
+            using (var command = new SqlCommand($"ALTER DATABASE {DbName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE \n DROP DATABASE {DbName}", connection))
+            {
+                connection.Open();
+                command.ExecuteNonQuery();
+
+                Console.WriteLine("Database dropped");
+            }
+
             Console.WriteLine("## Teardown end");
             Console.WriteLine(" ");
         }
@@ -79,6 +118,13 @@ namespace UniversalDbUpdater.Test
         private static bool IsDatabaseAvailable(MySqlConnection connection, string name)
         {
             using (var command = new MySqlCommand($"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{name}'", connection))
+            {
+                return command.ExecuteScalar() != null;
+            }
+        }
+        private static bool IsDatabaseAvailable(SqlConnection connection, string name)
+        {
+            using (var command = new SqlCommand($"SELECT * FROM master.dbo.sysdatabases WHERE [name]='{name}'", connection))
             {
                 return command.ExecuteScalar() != null;
             }

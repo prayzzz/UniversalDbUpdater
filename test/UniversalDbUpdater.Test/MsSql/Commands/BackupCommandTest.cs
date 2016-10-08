@@ -10,7 +10,7 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
     [TestFixture]
     public class BackupCommandTest
     {
-        private static readonly Settings Settings = Setup.Settings;
+        private static readonly Settings Settings = Setup.MsSqlSettings;
 
         [Test]
         public void Test_Type()

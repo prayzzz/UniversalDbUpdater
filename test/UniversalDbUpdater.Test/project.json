@@ -1,6 +1,10 @@
 {
   "version": "1.0.0-*",
 
+  "buildOptions": {
+    "embed": [ "MsSql/Resources/**/*.*", "MySql/Resources/**/*.*" ]
+  },
+
   "dependencies": {
     "dotnet-test-nunit": "3.4.0-beta-2",
     "UniversalDbUpdater": "*",

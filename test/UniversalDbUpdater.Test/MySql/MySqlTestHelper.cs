@@ -10,7 +10,7 @@ namespace UniversalDbUpdater.Test.MySql
     {
         public static void CreateScriptsTable(string connectionString, string database)
         {
-            var script = ResourceHelper.Current.GetEmbeddedFile(typeof(MySqlTestHelper).GetTypeInfo().Assembly, "UniversalDbUpdater.MySql.Test.Resources.DbScriptsTable.mysql");
+            var script = ResourceHelper.Current.GetEmbeddedFile(typeof(MySqlTestHelper).GetTypeInfo().Assembly, "UniversalDbUpdater.Test.MySql.Resources.DbScriptsTable.mysql");
 
             if (string.IsNullOrEmpty(script))
             {
