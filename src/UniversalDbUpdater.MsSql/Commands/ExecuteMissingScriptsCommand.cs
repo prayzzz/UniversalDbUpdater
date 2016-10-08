@@ -10,7 +10,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 {
     public class ExecuteMissingScriptsCommand : ICommand
     {
-        private static readonly Regex GoRegexPattern = new Regex("^GO$", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex GoRegexPattern = new Regex("^GO", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         private readonly IConsoleFacade _console;
 
