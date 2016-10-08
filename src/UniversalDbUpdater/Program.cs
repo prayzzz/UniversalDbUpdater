@@ -55,8 +55,6 @@ namespace UniversalDbUpdater
         private static int LoadSettings(IReadOnlyList<string> args)
         {
             var builder = new ConfigurationBuilder();
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-            builder.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
             // remove command from args
             var strippedArgs = args.ToArray();
