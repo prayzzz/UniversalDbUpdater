@@ -68,21 +68,10 @@ task Dotnet-Publish -depends Dotnet-Build, Dotnet-Test {
 }
 
 task Dotnet-Pack -depends Dotnet-Build {
-    exec { dotnet pack "src/UniversalDbUpdater/" --configuration $config --no-build --output $outputFolder }
-    $file = $outputFolder + "UniversalDbUpdater.$version.nupkg"
-    exec { nuget push $file $env:MYGET_APIKEY -Source https://www.myget.org/F/russianbee/api/v2/package }
-
-    exec { dotnet pack "src/UniversalDbUpdater.Common/" --configuration $config --no-build --output $outputFolder }
-    $file = $outputFolder + "UniversalDbUpdater.Common.$version.nupkg"
-    exec { nuget push $file $env:MYGET_APIKEY -Source https://www.myget.org/F/russianbee/api/v2/package }
-
-    exec { dotnet pack "src/UniversalDbUpdater.MsSql/" --configuration $config --no-build --output $outputFolder }
-    $file = $outputFolder + "UniversalDbUpdater.MsSql.$version.nupkg"
-    exec { nuget push $file $env:MYGET_APIKEY -Source https://www.myget.org/F/russianbee/api/v2/package }
-
-    exec { dotnet pack "src/UniversalDbUpdater.MySql/" --configuration $config --no-build --output $outputFolder }
-    $file = $outputFolder + "UniversalDbUpdater.MySql.$version.nupkg"
-    exec { nuget push $file $env:MYGET_APIKEY -Source https://www.myget.org/F/russianbee/api/v2/package }
+    Pack-Project("UniversalDbUpdater")
+    Pack-Project("UniversalDbUpdater.Common")
+    Pack-Project("UniversalDbUpdater.MsSql")
+    Pack-Project("UniversalDbUpdater.MySql")
 } 
 
 task Zip-Dotnet-Publish -depends Dotnet-Publish {
@@ -104,6 +93,13 @@ task Zip-Dotnet-Publish -depends Dotnet-Publish {
 
         Write-Host "Created $destinationPath"
     }
+}
+
+function Pack-Project($project){
+    exec { dotnet pack "src/$project/" --configuration $config --no-build --output $outputFolder }
+
+    $file = $outputFolder + "$project.$version.nupkg"
+    exec { nuget push $file $env:NUGET_APIKEY -Source https://www.nuget.org/api/v2/package }
 }
 
 function Apply-Version ($file) {
