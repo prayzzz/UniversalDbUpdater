@@ -38,7 +38,7 @@ namespace UniversalDbUpdater.MsSql.Test
                 connection.Open();
                 connection.ChangeDatabase(database);
 
-                using (var command = new SqlCommand("DROP TABLE [Infrastructure].[DbScripts] \n DROP SCHEMA [Infrastructure]", connection))
+                using (var command = new SqlCommand("DROP TABLE [Infrastructure].[DbScripts] \r\n DROP SCHEMA [Infrastructure]", connection))
                 {
                     command.ExecuteNonQuery();
                     Console.WriteLine("## TestHelper: DbScripts table dropped");

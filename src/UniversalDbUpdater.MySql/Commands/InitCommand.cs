@@ -43,9 +43,11 @@ namespace UniversalDbUpdater.MySql.Commands
                 using (var command = new MySqlCommand(script, connection))
                 {
                     _console.WriteLine("Creating table 'infrastructure.dbscripts'");
-                    return command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
+
+            return 0;
         }
 
         public static bool IsTableAvailable(MySqlConnection connection)

@@ -44,9 +44,11 @@ namespace UniversalDbUpdater.MsSql.Commands
                 using (var command = new SqlCommand(script, connection))
                 {
                     _console.WriteLine("Creating table 'Infrastructure.DbScripts'");
-                    return command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
                 }
             }
+
+            return 0;
         }
 
         public static bool IsTableAvailable(SqlConnection connection)

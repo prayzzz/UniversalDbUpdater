@@ -62,8 +62,6 @@ namespace UniversalDbUpdater.MsSql.Test.Commands
         [Test]
         public void Test_Execute_Without_Existing_Scripts_Table()
         {
-            MsSqlTestHelper.CreateScriptsTable(Setup.ConnectionString, Settings.Database);
-
             var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
 
             var command = new InitCommand(consoleMock.Object);
