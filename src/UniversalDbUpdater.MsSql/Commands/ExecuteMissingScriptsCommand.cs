@@ -30,12 +30,13 @@ namespace UniversalDbUpdater.MsSql.Commands
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
+                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
                 return 1;
             }
 
-            var list = ShowMissingScriptsCommand.GetMissingScripts(settings).ToList();
+            var scriptFilePaths = ShowMissingScriptsCommand.GetMissingScripts(settings).ToList();
 
-            if (!list.Any())
+            if (!scriptFilePaths.Any())
             {
                 _console.WriteLine("No missing scripts");
                 return 0;
@@ -45,12 +46,12 @@ namespace UniversalDbUpdater.MsSql.Commands
             {
                 connection.Open();
 
-                foreach (var scriptName in list)
+                foreach (var filePath in scriptFilePaths)
                 {
                     var transaction = connection.BeginTransaction();
 
-                    _console.WriteLine($" {scriptName}");
-                    var scriptContent = GoRegexPattern.Replace(File.ReadAllText(scriptName), "--GO");
+                    _console.WriteLine($" {Path.GetFileName(filePath)}");
+                    var scriptContent = GoRegexPattern.Replace(File.ReadAllText(filePath), "--GO");
 
                     using (var command = new SqlCommand())
                     {

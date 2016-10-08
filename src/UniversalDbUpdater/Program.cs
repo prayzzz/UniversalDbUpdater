@@ -31,8 +31,25 @@ namespace UniversalDbUpdater
                 Exit(exitCode);
             }
 
+            exitCode = CheckSettings();
+            if (exitCode != 0)
+            {
+                Exit(exitCode);
+            }
+
             exitCode = EvaluateArguments(args);
             Exit(exitCode);
+        }
+
+        private static int CheckSettings()
+        {
+            if (!Directory.Exists(Settings.ScriptsDirectory))
+            {
+                Console.WriteLine($"Directory '{Settings.ScriptsDirectory}' doesn't exist");
+                return 1;
+            }
+
+            return 0;
         }
 
         private static int LoadSettings(IReadOnlyList<string> args)
@@ -85,7 +102,6 @@ namespace UniversalDbUpdater
             try
             {
                 command.Execute(args.Skip(1), Settings);
-                Console.WriteLine();
             }
             catch (Exception ex)
             {
@@ -99,6 +115,7 @@ namespace UniversalDbUpdater
 
         private static void Exit(int exitCode)
         {
+            Console.WriteLine();
             Console.WriteLine($"Exit Code: {exitCode}");
             Environment.Exit(exitCode);
         }

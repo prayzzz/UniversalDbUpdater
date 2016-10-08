@@ -26,6 +26,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
+                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
                 return 1;
             }
 
@@ -37,12 +38,11 @@ namespace UniversalDbUpdater.MySql.Commands
                 return 0;
             }
 
-            _console.WriteLine($"{missingScripts.Count} missing scripts");
-            _console.WriteLine();
+            _console.WriteLine($" {missingScripts.Count} missing scripts");
 
             foreach (var missingScript in missingScripts)
             {
-                _console.WriteLine(missingScript);
+                _console.WriteLine($" {Path.GetFileName(missingScript)}");
             }
 
             return 0;
@@ -50,7 +50,8 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public static IEnumerable<string> GetMissingScripts(Settings settings)
         {
-            var localScripts = Directory.GetFiles(".", "*.mysql").Select(Path.GetFileName).ToList();
+
+            var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.mysql").ToList();
             var dbScripts = new List<DbScript>();
 
             using (var sqlConnection = new MySqlConnection(Database.GetConnectionString(settings)))

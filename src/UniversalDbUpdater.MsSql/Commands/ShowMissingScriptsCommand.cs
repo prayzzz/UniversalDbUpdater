@@ -26,6 +26,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
+                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
                 return 1;
             }
 
@@ -36,14 +37,12 @@ namespace UniversalDbUpdater.MsSql.Commands
                 _console.WriteLine("No missing scripts");
                 return 0;
             }
-
-
-            _console.WriteLine($"{missingScripts.Count} missing scripts");
-            _console.WriteLine();
+            
+            _console.WriteLine($"{missingScripts.Count} missing scripts:");
 
             foreach (var missingScript in missingScripts)
             {
-                _console.WriteLine($"{missingScript}");
+                _console.WriteLine($" {Path.GetFileName(missingScript)}");
             }
 
             return 0;
@@ -51,7 +50,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public static IEnumerable<string> GetMissingScripts(Settings settings)
         {
-            var localScripts = Directory.GetFiles(settings.ScriptsDirectory, "*.sql").ToList();
+            var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.sql").ToList();
             var dbScripts = new List<DbScript>();
 
             using (var sqlConnection = new SqlConnection(Database.GetConnectionString(settings)))

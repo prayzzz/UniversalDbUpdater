@@ -27,12 +27,13 @@ namespace UniversalDbUpdater.MySql.Commands
 
             if (!Database.IsDbScriptsTableAvailable(settings))
             {
+                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
                 return 1;
             }
 
-            var list = ShowMissingScriptsCommand.GetMissingScripts(settings).ToList();
+            var scriptFilePaths = ShowMissingScriptsCommand.GetMissingScripts(settings).ToList();
 
-            if (!list.Any())
+            if (!scriptFilePaths.Any())
             {
                 _console.WriteLine("No missing scripts");
                 return 0;
@@ -42,13 +43,13 @@ namespace UniversalDbUpdater.MySql.Commands
             {
                 connection.Open();
 
-                foreach (var scriptName in list)
+                foreach (var filePath in scriptFilePaths)
                 {
                     var script = new MySqlScript(connection);
                     var transaction = script.Connection.BeginTransaction();
 
-                    _console.WriteLine($" {scriptName}");
-                    var scriptContent = File.ReadAllText(scriptName);
+                    _console.WriteLine($" {Path.GetFileName(filePath)}");
+                    var scriptContent = File.ReadAllText(filePath);
 
                     try
                     {
