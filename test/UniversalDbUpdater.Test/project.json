@@ -3,9 +3,11 @@
 
   "dependencies": {
     "dotnet-test-nunit": "3.4.0-beta-2",
-    "UniversalDbUpdater.Common": "*",
+    "UniversalDbUpdater": "*",
     "Moq": "4.6.38-alpha",
-    "NUnit": "3.5.0"
+    "NUnit": "3.5.0",
+    "System.Data.SqlClient": "4.1.0",
+    "MySql.Data": "7.0.5-IR21"
   },
 
   "testRunner": "nunit",

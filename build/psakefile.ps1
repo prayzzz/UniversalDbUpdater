@@ -49,9 +49,6 @@ task Dotnet-Restore {
 task Set-Version {
     Apply-Version("src/UniversalDbUpdater/project.json")
     Apply-Version("src/UniversalDbUpdater/appsettings.json")
-    Apply-Version("src/UniversalDbUpdater.Common/project.json")
-    Apply-Version("src/UniversalDbUpdater.MsSql/project.json")
-    Apply-Version("src/UniversalDbUpdater.MySql/project.json")
 }
 
 task Dotnet-Build -depends Dotnet-Restore, Set-Version {
@@ -59,8 +56,7 @@ task Dotnet-Build -depends Dotnet-Restore, Set-Version {
 }
 
 task Dotnet-Test -depends Dotnet-Build {
-    Run-Test("UniversalDbUpdater.MsSql.Test")
-    Run-Test("UniversalDbUpdater.MySql.Test")    
+    Run-Test("UniversalDbUpdater.Test")    
 }
 
 task Dotnet-Publish -depends Dotnet-Build, Dotnet-Test {
@@ -69,9 +65,6 @@ task Dotnet-Publish -depends Dotnet-Build, Dotnet-Test {
 
 task Dotnet-Pack -depends Dotnet-Build {
     Pack-Project("UniversalDbUpdater")
-    Pack-Project("UniversalDbUpdater.Common")
-    Pack-Project("UniversalDbUpdater.MsSql")
-    Pack-Project("UniversalDbUpdater.MySql")
 } 
 
 task Zip-Dotnet-Publish -depends Dotnet-Publish {

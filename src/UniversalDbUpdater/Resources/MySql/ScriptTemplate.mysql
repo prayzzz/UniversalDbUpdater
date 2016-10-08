@@ -1,0 +1,13 @@
+﻿--
+-- Script
+--
+
+
+
+--
+-- Update Info
+--
+
+
+INSERT INTO  `infrastructure.dbscripts` (`Date`, `Name`, `Description`) 
+VALUES ('##DATE##', '##NAME##', '##DESCRIPTION##');
