@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UniversalDbUpdater.Common;
 
 namespace UniversalDbUpdater.MsSql.Commands
 {
     public class ExecuteMissingScriptsCommand : ICommand
     {
-        private static readonly Regex GoRegexPattern = new Regex("^GO", RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
         private readonly IConsoleFacade _console;
 
         public ExecuteMissingScriptsCommand(IConsoleFacade console)
@@ -51,24 +48,29 @@ namespace UniversalDbUpdater.MsSql.Commands
                     var transaction = connection.BeginTransaction();
 
                     _console.WriteLine($" {Path.GetFileName(filePath)}");
-                    var scriptContent = GoRegexPattern.Replace(File.ReadAllText(filePath), "--GO");
+                    var scriptContent = File.ReadAllText(filePath);
 
                     using (var command = new SqlCommand())
                     {
                         command.Transaction = transaction;
                         command.Connection = connection;
-                        command.CommandText = scriptContent;
 
-                        try
+                        foreach (var sqlBatch in scriptContent.Split(new[] { "GO", "Go", "go" }, StringSplitOptions.RemoveEmptyEntries))
                         {
-                            command.ExecuteNonQuery();
-                            transaction.Commit();
+                            command.CommandText = sqlBatch;
+
+                            try
+                            {
+                                command.ExecuteNonQuery();
+                            }
+                            catch (Exception)
+                            {
+                                transaction.Rollback();
+                                throw;
+                            }
                         }
-                        catch (Exception)
-                        {
-                            transaction.Rollback();
-                            throw;
-                        }
+
+                        transaction.Commit();
                     }
                 }
             }
