@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data.SqlClient;
-using System.Text;
 using UniversalDbUpdater.Common;
 using UniversalDbUpdater.MsSql.Commands;
 
@@ -10,18 +9,20 @@ namespace UniversalDbUpdater.MsSql
     {
         public static string GetConnectionString(Settings settings)
         {
-            var builder = new StringBuilder();
-            builder.Append($"Server={settings.Host};");
-            builder.Append($"Database={settings.Database};");
+            var builder = new SqlConnectionStringBuilder
+            {
+                DataSource = settings.Host,
+                InitialCatalog = settings.Database,
+            };
 
             if (settings.IntegratedSecurity)
             {
-                builder.Append($"Integrated Security={settings.IntegratedSecurity};");
+                builder.IntegratedSecurity = true;
             }
             else
             {
-                builder.Append($"User Id={settings.User};");
-                builder.Append($"Password={settings.Password};");
+                builder.UserID = settings.User;
+                builder.Password = settings.Password;
             }
 
             return builder.ToString();

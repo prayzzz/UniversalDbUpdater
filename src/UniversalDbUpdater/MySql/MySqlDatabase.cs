@@ -9,7 +9,16 @@ namespace UniversalDbUpdater.MySql
     {
         public static string GetConnectionString(Settings settings)
         {
-            return $"server={settings.Host};port={settings.Port};uid={settings.User};pwd={settings.Password};database={settings.Database};";
+            var builder = new MySqlConnectionStringBuilder
+            {
+                Database = settings.Database,
+                Server = settings.Host,
+                Port = (uint) settings.Port,
+                UserID = settings.User,
+                Password = settings.Password
+            };
+
+            return builder.ToString();
         }
 
         public static bool IsDbScriptsTableAvailable(Settings settings)

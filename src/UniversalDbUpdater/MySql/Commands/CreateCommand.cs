@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UniversalDbUpdater.Common;
 
@@ -27,7 +26,6 @@ namespace UniversalDbUpdater.MySql.Commands
             _console.WriteLine();
 
             var script = new DbScript();
-            script.Name = arguments.FirstOrDefault();
 
             while (string.IsNullOrEmpty(script.Name))
             {
