@@ -1,13 +1,13 @@
 properties {
     Import-Module psake-contrib/teamcity.psm1
 
-    $config = "Debug"    
+    $config = "Debug"
     $outputFolder = "dist/"
 
     $date = Get-Date -Format yyyy.MM.dd;
     $seconds = [math]::Round([datetime]::Now.TimeOfDay.TotalMinutes)
     $version = "$date.$seconds"
-    
+
     $isTeamcity = $env:TEAMCITY_VERSION
     if ($isTeamCity) { TeamCity-SetBuildNumber $version }
 
@@ -25,19 +25,19 @@ FormatTaskName {
 
 # Alias
 
-task Restore -depends Dotnet-Restore {    
+task Restore -depends Dotnet-Restore {
 }
 
-task Build -depends Dotnet-Build {    
+task Build -depends Dotnet-Build {
 }
 
-task Test -depends Dotnet-Test {    
+task Test -depends Dotnet-Test {
 }
 
-task Pack -depends Dotnet-Pack {    
+task Pack -depends Dotnet-Pack {
 }
 
-task Publish -depends Zip-Dotnet-Publish {    
+task Publish -depends Zip-Dotnet-Publish {
 }
 
 # Tasks
@@ -56,7 +56,7 @@ task Dotnet-Build -depends Dotnet-Restore, Set-Version {
 }
 
 task Dotnet-Test -depends Dotnet-Build {
-    Run-Test("UniversalDbUpdater.Test")    
+    Run-Test("UniversalDbUpdater.Test")
 }
 
 task Dotnet-Publish -depends Dotnet-Build, Dotnet-Test {
@@ -65,24 +65,24 @@ task Dotnet-Publish -depends Dotnet-Build, Dotnet-Test {
 
 task Dotnet-Pack -depends Dotnet-Build {
     Pack-Project("UniversalDbUpdater")
-} 
+}
 
 task Zip-Dotnet-Publish -depends Dotnet-Publish {
-    exec {        
+    exec {
         $source = "src/UniversalDbUpdater/bin/$config/netcoreapp1.0/publish"
         $destinationFile = "UniversalDbUpdater-$version.zip"
-        $destinationPath = $outputFolder + $destinationFile        
+        $destinationPath = $outputFolder + $destinationFile
 
-        If(!(Test-path $outputFolder)) {            
+        If(!(Test-path $outputFolder)) {
             mkdir $outputFolder
-        }        
+        }
 
-        If(Test-path $destinationPath) {            
+        If(Test-path $destinationPath) {
             Remove-item $destinationPath
         }
 
         Add-Type -assembly "system.io.compression.filesystem"
-        [io.compression.zipfile]::CreateFromDirectory($Source, $destinationPath) 
+        [io.compression.zipfile]::CreateFromDirectory($Source, $destinationPath)
 
         Write-Host "Created $destinationPath"
     }
@@ -103,12 +103,12 @@ function Apply-Version ($file) {
 
 function Run-Test ($project) {
     if ($isTeamCity) {
-        TeamCity-TestSuiteStarted $project 
+        TeamCity-TestSuiteStarted $project
     }
-    
-    exec { dotnet test "test/$project/" --configuration $config --no-build --result "TestResult.$project.xml" }
+
+    exec { dotnet test "test/$project/" --configuration $config --result "TestResult.$project.xml" }
 
     if ($isTeamCity) {
-        TeamCity-TestSuiteFinished $project 
-    }        
+        TeamCity-TestSuiteFinished $project
+    }
 }
