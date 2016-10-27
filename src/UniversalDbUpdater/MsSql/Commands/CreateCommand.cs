@@ -27,7 +27,6 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console.WriteLine();
 
             var script = new DbScript();
-            script.Name = arguments.FirstOrDefault();
 
             while (string.IsNullOrEmpty(script.Name))
             {

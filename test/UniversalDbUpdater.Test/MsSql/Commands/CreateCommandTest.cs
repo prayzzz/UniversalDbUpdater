@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Moq;
 using NUnit.Framework;
 using UniversalDbUpdater.Common;
 using UniversalDbUpdater.MsSql.Commands;
@@ -46,7 +47,7 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
             var now = DateTime.Now;
 
             var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-            consoleMock.Setup(x => x.ReadLine()).Returns(description);
+            consoleMock.SetupSequence(x => x.ReadLine()).Returns(name).Returns(description);
 
             var dateTimeMock = TestHelper.CreateDateTimeMock(now);
 
@@ -66,6 +67,17 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
 
             File.Delete(expectedFileName);
             Assert.False(File.Exists(expectedFileName));
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            var files = Directory.GetFiles(".", "*.sql");
+
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
         }
     }
 }
