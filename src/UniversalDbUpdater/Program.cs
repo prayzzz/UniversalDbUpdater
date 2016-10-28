@@ -105,7 +105,7 @@ namespace UniversalDbUpdater
 
             if (Settings.Type == CommandType.MsSql && string.IsNullOrEmpty(Settings.Schema))
             {
-                Settings.Table = "[Infrastructure]";
+                Settings.Schema = "[Infrastructure]";
             }
 
             if (Settings.Type == CommandType.MsSql && string.IsNullOrEmpty(Settings.Table))
@@ -115,7 +115,7 @@ namespace UniversalDbUpdater
 
             if (Settings.Type == CommandType.MySql && string.IsNullOrEmpty(Settings.Schema))
             {
-                Settings.Table = "infrastructure";
+                Settings.Schema = "infrastructure";
             }
 
             if (Settings.Type == CommandType.MySql && string.IsNullOrEmpty(Settings.Table))
