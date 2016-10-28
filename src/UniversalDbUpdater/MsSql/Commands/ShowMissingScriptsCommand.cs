@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using UniversalDbUpdater.Common;
+using static UniversalDbUpdater.MsSql.MsSqlDatabase;
 
 namespace UniversalDbUpdater.MsSql.Commands
 {
@@ -24,9 +25,9 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console.WriteLine("Showing missing scripts...");
             _console.WriteLine();
 
-            if (!MsSqlDatabase.IsDbScriptsTableAvailable(settings))
+            if (!IsDbScriptsTableAvailable(settings))
             {
-                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
+                _console.WriteLine($"Table '{GetTableName(settings.Schema, settings.Table)}' doesn't exist");
                 return 1;
             }
 
@@ -51,22 +52,18 @@ namespace UniversalDbUpdater.MsSql.Commands
         public static IEnumerable<string> GetMissingScripts(Settings settings)
         {
             var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.sql").ToList();
-            var dbScripts = new List<DbScript>();
+            var dbScripts = new List<string>();
 
-            using (var sqlConnection = new SqlConnection(MsSqlDatabase.GetConnectionString(settings)))
+            using (var sqlConnection = new SqlConnection(GetConnectionString(settings)))
             {
                 sqlConnection.Open();
 
-                using (var command = new SqlCommand("SELECT * FROM [Infrastructure].[DbScripts]", sqlConnection))
+                using (var command = new SqlCommand($"SELECT * FROM {GetTableName(settings.Schema, settings.Table)}", sqlConnection))
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        var script = new DbScript();
-                        script.Date = reader.GetDateTime(1);
-                        script.Name = reader.GetString(2);
-
-                        dbScripts.Add(script);
+                        dbScripts.Add(reader.GetString(1));
                     }
                 }
             }
@@ -80,7 +77,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
             foreach (var localScriptName in localScripts)
             {
-                if (dbScripts.All(x => x.FileNameWithoutExtension != Path.GetFileNameWithoutExtension(localScriptName)))
+                if (dbScripts.All(name => name != Path.GetFileNameWithoutExtension(localScriptName)))
                 {
                     missingScripts.Add(localScriptName);
                 }

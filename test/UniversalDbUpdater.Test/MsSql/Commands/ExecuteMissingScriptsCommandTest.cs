@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using UniversalDbUpdater.Common;
+using UniversalDbUpdater.MsSql;
 using UniversalDbUpdater.MsSql.Commands;
 
 namespace UniversalDbUpdater.Test.MsSql.Commands
@@ -41,7 +41,7 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
         [Test]
         public void Test_Execute_With_Missing_Scripts()
         {
-            MsSqlTestHelper.CreateScriptsTable(Setup.MsSqlConnectionString, Settings.Database);
+            MsSqlTestHelper.CreateScriptsTable(Setup.MsSqlConnectionString, Settings);
 
             // copy scripts from resources
             var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, $"UniversalDbUpdater.Test.MsSql.Resources.{Script01}");
@@ -62,28 +62,22 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
                 connection.Open();
                 connection.ChangeDatabase(Settings.Database);
 
-                using (var sqlCommand = new SqlCommand("SELECT * FROM [Infrastructure].[DbScripts]", connection))
+                using (var sqlCommand = new SqlCommand($"SELECT * FROM {MsSqlDatabase.GetTableName(Settings.Schema, Settings.Table)}", connection))
                 using (var reader = sqlCommand.ExecuteReader())
                 {
                     reader.Read();
-                    Assert.AreEqual(new DateTime(2016, 10, 01, 18, 00, 00), reader.GetDateTime(1));
-                    Assert.AreEqual("Script01", reader.GetString(2));
-                    Assert.AreEqual("Script01Description", reader.GetString(3));
+                    Assert.AreEqual("2016-10-01_18-00-00_Script01", reader.GetString(1));
 
                     reader.Read();
-                    Assert.AreEqual(new DateTime(2016, 10, 01, 19, 00, 00), reader.GetDateTime(1));
-                    Assert.AreEqual("Script02", reader.GetString(2));
-                    Assert.AreEqual("Script02Description", reader.GetString(3));
+                    Assert.AreEqual("2016-10-01_19-00-00_Script02", reader.GetString(1));
                 }
             }
-
-            MsSqlTestHelper.DropScriptsTable(Setup.MsSqlConnectionString, Settings.Database);
         }
         
         [Test]
         public void Test_Execute_Without_Missing_Scripts()
         {
-            MsSqlTestHelper.CreateScriptsTable(Setup.MsSqlConnectionString, Settings.Database);
+            MsSqlTestHelper.CreateScriptsTable(Setup.MsSqlConnectionString, Settings);
 
             var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
 
@@ -97,14 +91,12 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
                 connection.Open();
                 connection.ChangeDatabase(Settings.Database);
 
-                using (var sqlCommand = new SqlCommand("SELECT * FROM [Infrastructure].[DbScripts]", connection))
+                using (var sqlCommand = new SqlCommand($"SELECT * FROM {MsSqlDatabase.GetTableName(Settings.Schema, Settings.Table)}", connection))
                 using (var reader = sqlCommand.ExecuteReader())
                 {
                     Assert.False(reader.HasRows);
                 }
             }
-
-            MsSqlTestHelper.DropScriptsTable(Setup.MsSqlConnectionString, Settings.Database);
         }
 
         [TearDown]
@@ -115,6 +107,8 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
 
             File.Delete(Script02);
             Assert.False(File.Exists(Script02));
+            
+            MsSqlTestHelper.DropScriptsTable(Setup.MsSqlConnectionString, Settings);
         }
     }
 }

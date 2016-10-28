@@ -9,5 +9,5 @@
 --
 
 
-INSERT INTO [Infrastructure].[DbScripts] ([Date], [Name], [Description]) 
-VALUES ('##DATE##', '##NAME##', '##DESCRIPTION##');
+INSERT INTO ##SCRIPTTABLE## ([FileName]) 
+VALUES ('##FILENAME##');

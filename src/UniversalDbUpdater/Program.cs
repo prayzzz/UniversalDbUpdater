@@ -14,6 +14,31 @@ namespace UniversalDbUpdater
         private static readonly CommandLibrary CommandLibrary;
         private static IConfigurationRoot _configuration;
 
+        private static readonly Dictionary<string, string> SwitchMappings = new Dictionary<string, string>
+        {
+            {"--backup", "Settings:BackupDirectory" },
+
+            {"--database", "Settings:Database" },
+
+            {"--host", "Settings:Host" },
+
+            {"--isecurity", "Settings:IntegratedSecurity" },
+
+            {"--port", "Settings:Port" },
+
+            {"--password", "Settings:Password" },
+
+            {"--schema", "Settings:Schema" },
+
+            {"--scripts", "Settings:ScriptsDirectory" },
+
+            {"--table", "Settings:Table" },
+
+            {"--type", "Settings:Type" },
+
+            {"--user", "Settings:User" }
+        };
+
         static Program()
         {
             CommandLibrary = new CommandLibrary();
@@ -77,6 +102,27 @@ namespace UniversalDbUpdater
             }
 
             _configuration.GetSection("Settings").Bind(Settings);
+
+            if (Settings.Type == CommandType.MsSql && string.IsNullOrEmpty(Settings.Schema))
+            {
+                Settings.Table = "[Infrastructure]";
+            }
+
+            if (Settings.Type == CommandType.MsSql && string.IsNullOrEmpty(Settings.Table))
+            {
+                Settings.Table = "[DbScripts]";
+            }
+
+            if (Settings.Type == CommandType.MySql && string.IsNullOrEmpty(Settings.Schema))
+            {
+                Settings.Table = "infrastructure";
+            }
+
+            if (Settings.Type == CommandType.MySql && string.IsNullOrEmpty(Settings.Table))
+            {
+                Settings.Table = "dbscripts";
+            }
+
             return 0;
         }
 
@@ -117,26 +163,5 @@ namespace UniversalDbUpdater
             Console.WriteLine($"Exit Code: {exitCode}");
             Environment.Exit(exitCode);
         }
-
-        private static readonly Dictionary<string, string> SwitchMappings = new Dictionary<string, string>
-        {
-            {"--backup", "Settings:BackupDirectory" },
-
-            {"--database", "Settings:Database" },
-
-            {"--host", "Settings:Host" },
-
-            {"--isecurity", "Settings:IntegratedSecurity" },
-
-            {"--port", "Settings:Port" },
-
-            {"--password", "Settings:Password" },
-
-            {"--scripts", "Settings:ScriptsDirectory" },
-
-            {"--type", "Settings:Type" },
-
-            {"--user", "Settings:User" }
-        };
     }
 }

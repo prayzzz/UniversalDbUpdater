@@ -29,7 +29,6 @@ namespace UniversalDbUpdater.MsSql.Commands
 
             if (!MsSqlDatabase.IsDbScriptsTableAvailable(settings))
             {
-                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
                 return 1;
             }
 

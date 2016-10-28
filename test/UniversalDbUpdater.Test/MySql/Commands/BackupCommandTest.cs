@@ -13,33 +13,6 @@ namespace UniversalDbUpdater.Test.MySql.Commands
         private static readonly Settings Settings = Setup.MySqlSettings;
 
         [Test]
-        public void Test_Type()
-        {
-            var now = DateTime.Now;
-
-            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-            var dateTimeMock = TestHelper.CreateDateTimeMock(now);
-
-            var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
-
-            Assert.AreEqual(CommandType.MySql, command.CommandType);
-        }
-
-        [Test]
-        public void Test_Parameters()
-        {
-            var now = DateTime.Now;
-
-            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-            var dateTimeMock = TestHelper.CreateDateTimeMock(now);
-
-            var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
-
-            Assert.Contains("b", command.CommandName);
-            Assert.Contains("backup", command.CommandName);
-        }
-
-        [Test]
         public void Test_Backup_Created_Correctly()
         {
             var now = DateTime.Now;
@@ -59,6 +32,33 @@ namespace UniversalDbUpdater.Test.MySql.Commands
 
             Directory.Delete(Settings.BackupDirectory, true);
             Assert.False(Directory.Exists(Settings.BackupDirectory));
+        }
+
+        [Test]
+        public void Test_Parameters()
+        {
+            var now = DateTime.Now;
+
+            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
+            var dateTimeMock = TestHelper.CreateDateTimeMock(now);
+
+            var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
+
+            Assert.Contains("b", command.CommandName);
+            Assert.Contains("backup", command.CommandName);
+        }
+
+        [Test]
+        public void Test_Type()
+        {
+            var now = DateTime.Now;
+
+            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
+            var dateTimeMock = TestHelper.CreateDateTimeMock(now);
+
+            var command = new BackupCommand(consoleMock.Object, dateTimeMock.Object);
+
+            Assert.AreEqual(CommandType.MySql, command.CommandType);
         }
     }
 }

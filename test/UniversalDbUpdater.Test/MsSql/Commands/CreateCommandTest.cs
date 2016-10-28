@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Moq;
 using NUnit.Framework;
 using UniversalDbUpdater.Common;
+using UniversalDbUpdater.MsSql;
 using UniversalDbUpdater.MsSql.Commands;
 
 namespace UniversalDbUpdater.Test.MsSql.Commands
@@ -11,18 +11,18 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
     [TestFixture]
     public class CreateCommandTest
     {
-        [Test]
-        public void Test_Type()
+        [TearDown]
+        public void TearDown()
         {
-            var now = DateTime.Now;
+            var files = Directory.GetFiles(".", "*.sql");
 
-            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-            var dateTimeMock = TestHelper.CreateDateTimeMock(now);
-
-            var command = new CreateCommand(consoleMock.Object, dateTimeMock.Object);
-
-            Assert.AreEqual(CommandType.MsSql, command.CommandType);
+            foreach (var file in files)
+            {
+                File.Delete(file);
+            }
         }
+
+        private static readonly Settings Settings = Setup.MsSqlSettings;
 
         [Test]
         public void Test_Command()
@@ -42,12 +42,11 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
         public void Test_Script_Created_Correctly_With_Scriptname()
         {
             const string name = "Test Name";
-            const string description = "Test Description";
 
             var now = DateTime.Now;
 
             var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-            consoleMock.SetupSequence(x => x.ReadLine()).Returns(name).Returns(description);
+            consoleMock.Setup(x => x.ReadLine()).Returns(name);
 
             var dateTimeMock = TestHelper.CreateDateTimeMock(now);
 
@@ -57,27 +56,29 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
 
             Assert.AreEqual(0, returnCode);
 
-            var expectedFileName = now.ToString(Constants.DateFormat) + "_" + name.Replace(" ", "_") + ".sql";
-            Assert.True(File.Exists(expectedFileName));
+            var fileName = now.ToString(Constants.DateFormat) + "_" + name.Replace(" ", "_");
+            var expectedFile = fileName + ".sql";
+            Assert.True(File.Exists(expectedFile));
 
-            var fileContent = File.ReadAllText(expectedFileName);
-            Assert.True(fileContent.Contains(name));
-            Assert.True(fileContent.Contains(description));
-            Assert.True(fileContent.Contains(now.ToString("s")));
+            var fileContent = File.ReadAllText(expectedFile);
+            Assert.True(fileContent.Contains(MsSqlDatabase.GetTableName(Settings.Schema, Settings.Table)));
+            Assert.True(fileContent.Contains(fileName));
 
-            File.Delete(expectedFileName);
-            Assert.False(File.Exists(expectedFileName));
+            File.Delete(expectedFile);
+            Assert.False(File.Exists(expectedFile));
         }
 
-        [TearDown]
-        public void TearDown()
+        [Test]
+        public void Test_Type()
         {
-            var files = Directory.GetFiles(".", "*.sql");
+            var now = DateTime.Now;
 
-            foreach (var file in files)
-            {
-                File.Delete(file);
-            }
+            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
+            var dateTimeMock = TestHelper.CreateDateTimeMock(now);
+
+            var command = new CreateCommand(consoleMock.Object, dateTimeMock.Object);
+
+            Assert.AreEqual(CommandType.MsSql, command.CommandType);
         }
     }
 }

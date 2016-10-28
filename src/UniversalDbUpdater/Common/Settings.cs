@@ -16,6 +16,10 @@
 
         public string Database { get; set; }
 
+        public string Table { get; set; }
+
+        public string Schema { get; set; }
+
         public bool IntegratedSecurity { get; set; }
 
         public string ScriptsDirectory { get; set; } = "./";

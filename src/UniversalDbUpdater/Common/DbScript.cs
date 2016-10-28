@@ -1,17 +1,23 @@
-﻿using System;
-
-namespace UniversalDbUpdater.Common
+﻿namespace UniversalDbUpdater.Common
 {
     public class DbScript
     {
-        public DateTime Date { get; set; }
+        private string _name;
 
-        public string Description { get; set; }
-
-        public string FileNameWithoutExtension => Date.ToString(Constants.DateFormat) + "_" + Name.Replace(" ", "_");
+        //public string FileNameWithoutExtension => Date.ToString(Constants.DateFormat) + "_" + Name.Replace(" ", "_");
 
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value.Replace(" ", "_");
+            }
+        }
     }
 }

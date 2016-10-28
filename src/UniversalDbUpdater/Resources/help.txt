@@ -19,6 +19,8 @@ Options:
  --isecurity     Integrated Security (for mssql) 
  --port          Host port
  --password      Password
+ --schema        Schema for script table (Default: infrastructure)
  --scripts       Scripts Directory (Default: ./ )
+ --table         Tablename for storing executed scripts (Default: dbscripts)
  --type          Database type: mssql, mysql
  --user          Username

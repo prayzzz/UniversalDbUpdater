@@ -27,7 +27,6 @@ namespace UniversalDbUpdater.MySql.Commands
 
             if (!MySqlDatabase.IsDbScriptsTableAvailable(settings))
             {
-                _console.WriteLine("Table 'Infrastructure.DbScripts' doesn't exist");
                 return 1;
             }
 

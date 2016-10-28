@@ -9,5 +9,5 @@
 --
 
 
-INSERT INTO  [Infrastructure].[DbScripts] ([Date], [Name], [Description]) 
-VALUES ('2016-10-01T19:00:00', 'Script02', 'Script02Description');
+INSERT INTO  [Infrastructure].[DbScripts] ([FileName]) 
+VALUES ('2016-10-01_19-00-00_Script02')

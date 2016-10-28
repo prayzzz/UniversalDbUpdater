@@ -39,5 +39,5 @@ GO
 --
 
 
-INSERT INTO  [Infrastructure].[DbScripts] ([Date], [Name], [Description]) 
-VALUES ('2016-10-01T18:00:00', 'Script01', 'Script01Description');
+INSERT INTO  [Infrastructure].[DbScripts] ([FileName]) 
+VALUES ('2016-10-01_18-00-00_Script01');

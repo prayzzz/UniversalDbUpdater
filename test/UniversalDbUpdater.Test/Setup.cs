@@ -25,7 +25,10 @@ namespace UniversalDbUpdater.Test
                 User = "root",
                 Password = "admin",
                 Database = DbName,
-                BackupDirectory = "./backup"
+                BackupDirectory = "./backup",
+                Schema = "infrastructure",
+                Table = "dbscripts"
+                
             };
 
             MsSqlSettings = new Settings
@@ -33,7 +36,9 @@ namespace UniversalDbUpdater.Test
                 Host = @"(localdb)\MSSQLLocalDB",
                 Database = DbName,
                 BackupDirectory = "./backup",
-                IntegratedSecurity = true
+                IntegratedSecurity = true,
+                Schema = "[Infrastructure]",
+                Table = "[DbScripts]"
             };
         }
 
@@ -122,6 +127,7 @@ namespace UniversalDbUpdater.Test
                 return command.ExecuteScalar() != null;
             }
         }
+
         private static bool IsDatabaseAvailable(SqlConnection connection, string name)
         {
             using (var command = new SqlCommand($"SELECT * FROM master.dbo.sysdatabases WHERE [name]='{name}'", connection))

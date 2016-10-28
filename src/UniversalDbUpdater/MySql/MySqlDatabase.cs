@@ -13,7 +13,7 @@ namespace UniversalDbUpdater.MySql
             {
                 Database = settings.Database,
                 Server = settings.Host,
-                Port = (uint) settings.Port,
+                Port = (uint)settings.Port,
                 UserID = settings.User,
                 Password = settings.Password
             };
@@ -27,16 +27,26 @@ namespace UniversalDbUpdater.MySql
             {
                 connection.Open();
 
-                if (!InitCommand.IsTableAvailable(connection))
+                if (!InitCommand.IsTableAvailable(connection, settings))
                 {
-                    Console.WriteLine("Table 'infrastructure.dbscripts' not available");
-                    Console.WriteLine("Use -i first");
+                    Console.WriteLine($"Table '{GetTableName(settings.Schema, settings.Table)}' not available");
+                    Console.WriteLine("Use init command first");
 
                     return false;
                 }
             }
 
             return true;
+        }
+
+        public static string GetTableName(string schema, string table)
+        {
+            if (string.IsNullOrEmpty(schema))
+            {
+                return table;
+            }
+
+            return $"{schema}_{table}";
         }
     }
 }

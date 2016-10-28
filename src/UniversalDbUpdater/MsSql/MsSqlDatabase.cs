@@ -34,9 +34,9 @@ namespace UniversalDbUpdater.MsSql
             {
                 connection.Open();
 
-                if (!InitCommand.IsTableAvailable(connection))
+                if (!InitCommand.IsTableAvailable(connection, settings))
                 {
-                    Console.WriteLine("Table [Infrastructure].[DbScripts] not available");
+                    Console.WriteLine($"Table '{GetTableName(settings.Schema, settings.Table)}' not available");
                     Console.WriteLine("Use -i first");
 
                     return false;
@@ -44,6 +44,16 @@ namespace UniversalDbUpdater.MsSql
             }
 
             return true;
+        }
+
+        public static string GetTableName(string schema, string table)
+        {
+            if (string.IsNullOrEmpty(schema))
+            {
+                return table;
+            }
+
+            return $"{schema}.{table}";
         }
     }
 }

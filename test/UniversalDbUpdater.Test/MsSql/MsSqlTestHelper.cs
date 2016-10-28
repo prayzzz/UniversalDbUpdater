@@ -3,14 +3,15 @@ using System.Data.SqlClient;
 using System.Reflection;
 using NUnit.Framework;
 using UniversalDbUpdater.Common;
+using UniversalDbUpdater.MsSql;
 
 namespace UniversalDbUpdater.Test.MsSql
 {
     public static class MsSqlTestHelper
     {
-        public static void CreateScriptsTable(string connectionString, string database)
+        public static void CreateScriptsTable(string connectionString, Settings settings)
         {
-            var script = ResourceHelper.Current.GetEmbeddedFile(typeof(MsSqlTestHelper).GetTypeInfo().Assembly, "UniversalDbUpdater.Test.MsSql.Resources.DbScriptsTable.sql");
+            var script = ResourceHelper.Current.GetEmbeddedFile(typeof(MsSqlDatabase).GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Resources.DbScriptsTable.sql");
 
             if (string.IsNullOrEmpty(script))
             {
@@ -18,30 +19,32 @@ namespace UniversalDbUpdater.Test.MsSql
                 Assert.Fail();
             }
 
+            script = script.Replace("##SCRIPTTABLE##", MsSqlDatabase.GetTableName(settings.Schema, settings.Table));
+
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                connection.ChangeDatabase(database);
+                connection.ChangeDatabase(settings.Database);
 
                 using (var command = new SqlCommand(script, connection))
                 {
                     command.ExecuteNonQuery();
-                    Console.WriteLine("## TestHelper: DbScripts table created");
+                    Console.WriteLine("## TestHelper: Scripts table created");
                 }
             }
         }
 
-        public static void DropScriptsTable(string connectionString, string database)
+        public static void DropScriptsTable(string connectionString, Settings settings)
         {
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
-                connection.ChangeDatabase(database);
+                connection.ChangeDatabase(settings.Database);
 
-                using (var command = new SqlCommand("DROP TABLE [Infrastructure].[DbScripts] \r\n DROP SCHEMA [Infrastructure]", connection))
+                using (var command = new SqlCommand($"DROP TABLE IF EXISTS {MsSqlDatabase.GetTableName(settings.Schema, settings.Table)} \r\n DROP SCHEMA IF EXISTS {settings.Schema}", connection))
                 {
                     command.ExecuteNonQuery();
-                    Console.WriteLine("## TestHelper: DbScripts table dropped");
+                    Console.WriteLine("## TestHelper: Scripts table dropped");
                 }
             }
         }

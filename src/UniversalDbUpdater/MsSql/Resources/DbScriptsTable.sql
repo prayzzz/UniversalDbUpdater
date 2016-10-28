@@ -1,10 +1,8 @@
 ﻿CREATE SCHEMA [Infrastructure]
 
-CREATE TABLE [Infrastructure].[DbScripts](
+CREATE TABLE ##SCRIPTTABLE##(
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Date] [datetime] NOT NULL,
-	[Name] [varchar](255) NOT NULL,
-	[Description] [text] NULL,
+	[FileName] [text] NOT NULL,
  CONSTRAINT [PK_DbScripts] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

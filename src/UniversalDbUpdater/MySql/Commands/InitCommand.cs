@@ -2,6 +2,7 @@
 using System.Reflection;
 using MySql.Data.MySqlClient;
 using UniversalDbUpdater.Common;
+using static UniversalDbUpdater.MySql.MySqlDatabase;
 
 namespace UniversalDbUpdater.MySql.Commands
 {
@@ -23,17 +24,18 @@ namespace UniversalDbUpdater.MySql.Commands
             _console.WriteLine("Initializing database...");
             _console.WriteLine();
 
-            using (var connection = new MySqlConnection(MySqlDatabase.GetConnectionString(settings)))
+            using (var connection = new MySqlConnection(GetConnectionString(settings)))
             {
                 connection.Open();
 
-                if (IsTableAvailable(connection))
+                if (IsTableAvailable(connection, settings))
                 {
-                    _console.WriteLine("Table 'infrastructure.dbscripts' already exists");
+                    _console.WriteLine($"Table '{GetTableName(settings.Schema, settings.Table)}' already exists");
                     return 0;
                 }
 
                 var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MySql.Resources.DbScriptsTable.mysql");
+                script = script.Replace("##SCRIPTTABLE##", GetTableName(settings.Schema, settings.Table));
 
                 if (string.IsNullOrEmpty(script))
                 {
@@ -42,7 +44,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
                 using (var command = new MySqlCommand(script, connection))
                 {
-                    _console.WriteLine("Creating table 'infrastructure.dbscripts'");
+                    _console.WriteLine($"Creating table '{GetTableName(settings.Schema, settings.Table)}'");
                     command.ExecuteNonQuery();
                 }
             }
@@ -50,9 +52,9 @@ namespace UniversalDbUpdater.MySql.Commands
             return 0;
         }
 
-        public static bool IsTableAvailable(MySqlConnection connection)
+        public static bool IsTableAvailable(MySqlConnection connection, Settings settings)
         {
-            using (var command = new MySqlCommand("SHOW TABLES LIKE 'infrastructure.dbscripts'", connection))
+            using (var command = new MySqlCommand($"SHOW TABLES LIKE '{GetTableName(settings.Schema, settings.Table)}'", connection))
             {
                 var executeScalar = command.ExecuteScalar();
                 return executeScalar != null;

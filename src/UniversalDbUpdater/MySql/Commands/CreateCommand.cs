@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using UniversalDbUpdater.Common;
+using static UniversalDbUpdater.MySql.MySqlDatabase;
 
 namespace UniversalDbUpdater.MySql.Commands
 {
@@ -25,25 +26,21 @@ namespace UniversalDbUpdater.MySql.Commands
             _console.WriteLine("Creating new script...");
             _console.WriteLine();
 
-            var script = new DbScript();
-
-            while (string.IsNullOrEmpty(script.Name))
+            var scriptName = string.Empty;
+            while (string.IsNullOrEmpty(scriptName))
             {
                 _console.WriteLine("Script name:");
-                script.Name = _console.ReadLine();
+                scriptName = _console.ReadLine();
                 _console.WriteLine();
             }
 
-            _console.WriteLine("Description:");
-            script.Description = _console.ReadLine();
-            script.Date = _dateTime.Now;
+            var scriptFileName = _dateTime.Now.ToString(Constants.DateFormat) + "_" + scriptName.Replace(" ", "_");
 
             var file = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MySql.Resources.ScriptTemplate.mysql");
-            file = file.Replace("##DATE##", script.Date.ToString("s"));
-            file = file.Replace("##NAME##", script.Name);
-            file = file.Replace("##DESCRIPTION##", script.Description);
+            file = file.Replace("##SCRIPTTABLE##", GetTableName(settings.Schema, settings.Table));
+            file = file.Replace("##FILENAME##", scriptFileName);
 
-            var scriptFile = Path.Combine(settings.ScriptsDirectory, script.FileNameWithoutExtension + ".mysql");
+            var scriptFile = Path.Combine(settings.ScriptsDirectory, scriptFileName + ".mysql");
             File.WriteAllText(scriptFile, file);
 
             _console.WriteLine();

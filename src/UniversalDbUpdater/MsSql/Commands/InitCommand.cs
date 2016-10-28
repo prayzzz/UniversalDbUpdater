@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Reflection;
 using UniversalDbUpdater.Common;
+using static UniversalDbUpdater.MsSql.MsSqlDatabase;
 
 namespace UniversalDbUpdater.MsSql.Commands
 {
@@ -24,17 +25,18 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console.WriteLine("Initializing database...");
             _console.WriteLine();
 
-            using (var connection = new SqlConnection(MsSqlDatabase.GetConnectionString(settings)))
+            using (var connection = new SqlConnection(GetConnectionString(settings)))
             {
                 connection.Open();
 
-                if (IsTableAvailable(connection))
+                if (IsTableAvailable(connection, settings))
                 {
-                    _console.WriteLine("Table 'Infrastructure.DbScripts' already exists");
+                    _console.WriteLine($"Table '{GetTableName(settings.Schema, settings.Table)}' already exists");
                     return 0;
                 }
 
                 var script = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Resources.DbScriptsTable.sql");
+                script = script.Replace("##SCRIPTTABLE##", GetTableName(settings.Schema, settings.Table));
 
                 if (string.IsNullOrEmpty(script))
                 {
@@ -43,7 +45,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
                 using (var command = new SqlCommand(script, connection))
                 {
-                    _console.WriteLine("Creating table 'Infrastructure.DbScripts'");
+                    _console.WriteLine($"Creating table '{GetTableName(settings.Schema, settings.Table)}'");
                     command.ExecuteNonQuery();
                 }
             }
@@ -51,9 +53,12 @@ namespace UniversalDbUpdater.MsSql.Commands
             return 0;
         }
 
-        public static bool IsTableAvailable(SqlConnection connection)
+        public static bool IsTableAvailable(SqlConnection connection, Settings settings)
         {
-            using (var command = new SqlCommand("SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'Infrastructure' AND TABLE_NAME = 'DbScripts'", connection))
+            var schema = settings.Schema.Replace("[", "").Replace("]", "");
+            var table = settings.Table.Replace("[", "").Replace("]", "");
+
+            using (var command = new SqlCommand($"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '{schema}' AND TABLE_NAME = '{table}'", connection))
             {
                 return command.ExecuteScalar() != null;
             }

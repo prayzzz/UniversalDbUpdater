@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UniversalDbUpdater.Common;
+using static UniversalDbUpdater.MsSql.MsSqlDatabase;
 
 namespace UniversalDbUpdater.MsSql.Commands
 {
@@ -26,27 +26,24 @@ namespace UniversalDbUpdater.MsSql.Commands
             _console.WriteLine("Creating new script...");
             _console.WriteLine();
 
-            var script = new DbScript();
-
-            while (string.IsNullOrEmpty(script.Name))
+            var scriptName = string.Empty;
+            while (string.IsNullOrEmpty(scriptName))
             {
                 _console.WriteLine("Script name:");
-                script.Name = _console.ReadLine();
+                scriptName = _console.ReadLine();
                 _console.WriteLine();
             }
 
-            _console.WriteLine("Description:");
-            script.Description = _console.ReadLine();
-            script.Date = _dateTime.Now;
+            var scriptFileName = _dateTime.Now.ToString(Constants.DateFormat) + "_" + scriptName.Replace(" ", "_");
 
             var file = ResourceHelper.Current.GetEmbeddedFile(GetType().GetTypeInfo().Assembly, "UniversalDbUpdater.MsSql.Resources.ScriptTemplate.sql");
-            file = file.Replace("##DATE##", script.Date.ToString("s"));
-            file = file.Replace("##NAME##", script.Name);
-            file = file.Replace("##DESCRIPTION##", script.Description);
+            file = file.Replace("##SCRIPTTABLE##", GetTableName(settings.Schema, settings.Table));
+            file = file.Replace("##FILENAME##", scriptFileName);
 
-            var scriptFile = Path.GetFullPath(Path.Combine(settings.ScriptsDirectory, script.FileNameWithoutExtension + ".sql"));
+            var scriptFile = Path.GetFullPath(Path.Combine(settings.ScriptsDirectory, scriptFileName + ".sql"));
             File.WriteAllText(scriptFile, file);
 
+            _console.WriteLine();
             _console.WriteLine($"Script created: {scriptFile}");
 
             return 0;
