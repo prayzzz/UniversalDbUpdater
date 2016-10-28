@@ -12,31 +12,22 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
     [TestFixture]
     public class ExecuteMissingScriptsCommandTest
     {
+        [TearDown]
+        public void TearDown()
+        {
+            File.Delete(Script01);
+            Assert.False(File.Exists(Script01));
+
+            File.Delete(Script02);
+            Assert.False(File.Exists(Script02));
+            
+            MsSqlTestHelper.DropScriptsTable(Setup.MsSqlConnectionString, Settings);
+        }
+
         private const string Script01 = "2016-10-01_18-00-00_Script01.sql";
         private const string Script02 = "2016-10-01_19-00-00_Script02.sql";
 
         private static readonly Settings Settings = Setup.MsSqlSettings;
-
-        [Test]
-        public void Test_Type()
-        {
-            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-
-            var command = new ExecuteMissingScriptsCommand(consoleMock.Object);
-
-            Assert.AreEqual(CommandType.MsSql, command.CommandType);
-        }
-
-        [Test]
-        public void Test_Parameters()
-        {
-            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
-
-            var command = new ExecuteMissingScriptsCommand(consoleMock.Object);
-
-            Assert.Contains("e", command.CommandName);
-            Assert.Contains("execute", command.CommandName);
-        }
 
         [Test]
         public void Test_Execute_With_Missing_Scripts()
@@ -73,7 +64,7 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
                 }
             }
         }
-        
+
         [Test]
         public void Test_Execute_Without_Missing_Scripts()
         {
@@ -99,16 +90,25 @@ namespace UniversalDbUpdater.Test.MsSql.Commands
             }
         }
 
-        [TearDown]
-        public void TearDown()
+        [Test]
+        public void Test_Parameters()
         {
-            File.Delete(Script01);
-            Assert.False(File.Exists(Script01));
+            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
 
-            File.Delete(Script02);
-            Assert.False(File.Exists(Script02));
-            
-            MsSqlTestHelper.DropScriptsTable(Setup.MsSqlConnectionString, Settings);
+            var command = new ExecuteMissingScriptsCommand(consoleMock.Object);
+
+            Assert.Contains("e", command.CommandName);
+            Assert.Contains("execute", command.CommandName);
+        }
+
+        [Test]
+        public void Test_Type()
+        {
+            var consoleMock = TestHelper.CreateConsoleMock().SetupWriteLineToConsole();
+
+            var command = new ExecuteMissingScriptsCommand(consoleMock.Object);
+
+            Assert.AreEqual(CommandType.MsSql, command.CommandType);
         }
     }
 }
