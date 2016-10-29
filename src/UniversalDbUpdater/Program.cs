@@ -115,12 +115,12 @@ namespace UniversalDbUpdater
 
             if (Settings.Type == CommandType.MySql && string.IsNullOrEmpty(Settings.Schema))
             {
-                Settings.Schema = "infrastructure";
+                Settings.Schema = "Infrastructure";
             }
 
             if (Settings.Type == CommandType.MySql && string.IsNullOrEmpty(Settings.Table))
             {
-                Settings.Table = "dbscripts";
+                Settings.Table = "DbScripts";
             }
 
             return 0;
