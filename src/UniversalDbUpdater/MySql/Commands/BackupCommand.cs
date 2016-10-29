@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using UniversalDbUpdater.Common;
 
 namespace UniversalDbUpdater.MySql.Commands
@@ -57,29 +58,40 @@ namespace UniversalDbUpdater.MySql.Commands
         {
             var mysqlDump = "mysqldump";
 
-            if (IsMysqlDumpInPath())
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return mysqlDump;
+                if (IsMysqlDumpInPath("where"))
+                {
+                    return mysqlDump;
+                }
+
+                mysqlDump = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), @"MySQL\MySQL Server 5.7\bin\mysqldump.exe");
+
+                if (File.Exists(mysqlDump))
+                {
+                    return mysqlDump;
+                }
+
+                mysqlDump = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), @"MySQL\MySQL Server 5.7\bin\mysqldump.exe");
+
+                if (File.Exists(mysqlDump))
+                {
+                    return mysqlDump;
+                }
             }
-
-            mysqlDump = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles"), @"MySQL\MySQL Server 5.7\bin\mysqldump.exe");
-
-            if (File.Exists(mysqlDump))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return mysqlDump;
-            }
-
-            mysqlDump = Path.Combine(Environment.GetEnvironmentVariable("ProgramFiles(x86)"), @"MySQL\MySQL Server 5.7\bin\mysqldump.exe");
-
-            if (File.Exists(mysqlDump))
-            {
-                return mysqlDump;
+                if (IsMysqlDumpInPath("which"))
+                {
+                    return mysqlDump;
+                }
             }
 
             throw new FileNotFoundException("mysqldump not found");
         }
 
-        private static bool IsMysqlDumpInPath()
+        private static bool IsMysqlDumpInPath(string where)
         {
             try
             {
@@ -87,7 +99,7 @@ namespace UniversalDbUpdater.MySql.Commands
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.RedirectStandardOutput = true;
                 p.StartInfo.RedirectStandardError = true;
-                p.StartInfo.FileName = "where";
+                p.StartInfo.FileName = where;
                 p.StartInfo.Arguments = "mysqldump";
                 p.Start();
                 p.WaitForExit();
