@@ -145,7 +145,7 @@ namespace UniversalDbUpdater
 
             try
             {
-                command.Execute(args.Skip(1), Settings);
+                return command.Execute(args.Skip(1), Settings);
             }
             catch (Exception ex)
             {
@@ -153,8 +153,6 @@ namespace UniversalDbUpdater
                 Console.WriteLine(ex);
                 return 1;
             }
-
-            return 0;
         }
 
         private static void Exit(int exitCode)
