@@ -51,7 +51,7 @@ namespace UniversalDbUpdater.MsSql.Commands
 
         public static IEnumerable<string> GetMissingScripts(Settings settings)
         {
-            var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.sql").ToList();
+            var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.sql").OrderBy(x => x).ToList();
             var dbScripts = new List<string>();
 
             using (var sqlConnection = new SqlConnection(GetConnectionString(settings)))

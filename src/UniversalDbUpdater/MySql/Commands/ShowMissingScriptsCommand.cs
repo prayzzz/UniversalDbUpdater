@@ -51,7 +51,7 @@ namespace UniversalDbUpdater.MySql.Commands
 
         public static IEnumerable<string> GetMissingScripts(Settings settings)
         {
-            var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.mysql").ToList();
+            var localScripts = Directory.GetFiles(Path.GetFullPath(settings.ScriptsDirectory), "*.mysql").OrderBy(x => x).ToList();
             var dbScripts = new List<string>();
 
             using (var sqlConnection = new MySqlConnection(GetConnectionString(settings)))
